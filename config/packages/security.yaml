@@ -2,12 +2,14 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
         App\Entity\User:
-            algorithm: argon2i
+            algorithm: auto
+
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: username
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/_(profiler|wdt)
