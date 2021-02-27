@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  *      collectionOperations={
  *          "post"={
- *              "security"="is_granted('ROLE_ADMIN')",
+ *              "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
  *              "validation_groups"={"Default", "Create"},
  *              "denormalization_context"={"groups"={"user.write"}}
  *          },
@@ -32,9 +32,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"user.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *              "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"
  *          },
- *          "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *          "request_password"={
  *              "method"="POST",
  *              "path"="user/request_password",

@@ -19,15 +19,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *         "post"={
  *              "denormalization_context"={"groups"={"role.write"}},
- *              "security"="is_granted('ROLE_ADMIN')"},
+ *              "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *         "put"={
- *                "security"="is_granted('ROLE_ADMIN')",
+ *                "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
  *                "denormalization_context"={"groups"={"role.update"}}
  *          },
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "delete"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"}
  *     }
  * )
  * @ORM\Entity(repositoryClass=RolesRepository::class)
