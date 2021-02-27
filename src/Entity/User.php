@@ -26,10 +26,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "validation_groups"={"Default", "Create"},
  *              "denormalization_context"={"groups"={"user.write"}}
  *          },
- *          "get"={"security"="is_granted('IS_AUTHENTICATED_REMEMBERED')"},
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *      },
  *      itemOperations={
- *          "get"={"security"="is_granted('IS_AUTHENTICATED_REMEMBERED')"},
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"user.update"}},
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
