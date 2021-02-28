@@ -51,9 +51,9 @@ class UserPostWriteSubscriber implements EventSubscriberInterface
         if (!($user instanceof User)) {
             return;
         }
-
-        if ($this->tokenStorage->getToken()) {
-            $userCurrent = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if ($token) {
+            $userCurrent = $token->getUser();
 
             if (!($userCurrent instanceof User)) {
                 throw new NotFoundException('User current not found');
