@@ -56,7 +56,7 @@ class UserPostWriteSubscriber implements EventSubscriberInterface
             $userCurrent = $token->getUser();
 
             if (!($userCurrent instanceof User)) {
-                throw new NotFoundException($userCurrent->getUsername());
+                throw new NotFoundException($userCurrent);
             }
 
             if (!$this->entityManager->isOpen()) {
