@@ -26,7 +26,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "validation_groups"={"Default", "Create"},
  *              "denormalization_context"={"groups"={"user.write"}}
  *          },
- *          "get"={"security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"},
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
  *      itemOperations={
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
