@@ -165,6 +165,12 @@ class User implements UserInterface, EncoderAwareInterface
      */
     private $plainPassword;
 
+    /**
+     * @Assert\Type(type="string")
+     * @Groups({"user"})
+     */
+    private $token;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -411,5 +417,21 @@ class User implements UserInterface, EncoderAwareInterface
         $this->plainPassword = $plainPassword;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token): void
+    {
+        $this->token = $token;
     }
 }
