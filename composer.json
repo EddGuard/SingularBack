@@ -37,7 +37,8 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "symfony/debug-bundle": "5.1.*"
+        "symfony/debug-bundle": "5.1.*",
+        "symfony/web-server-bundle": "4.4.2"
     },
     "config": {
         "optimize-autoloader": true,
