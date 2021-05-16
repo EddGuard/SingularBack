@@ -84,6 +84,11 @@ class Active
      */
     private $customAttributes;
 
+    /**
+     * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="activeId", cascade={"persist", "remove"})
+     */
+    private $activeRecord;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -209,6 +214,24 @@ class Active
     public function setCustomAttributes(string $customAttributes): self
     {
         $this->customAttributes = $customAttributes;
+
+        return $this;
+    }
+
+    public function getActiveRecord(): ?ActiveRecord
+    {
+        return $this->activeRecord;
+    }
+
+    public function setActiveRecord(?ActiveRecord $activeRecord): self
+    {
+        $this->activeRecord = $activeRecord;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newActiveId = null === $activeRecord ? null : $this;
+        if ($activeRecord->getActiveId() !== $newActiveId) {
+            $activeRecord->setActiveId($newActiveId);
+        }
 
         return $this;
     }
