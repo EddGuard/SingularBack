@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Exception\InvalidArgumentException;
 use App\Repository\ActiveRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,6 +17,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Active
 {
+    const AVAILABLE_TYPES = [
+        'ENGINE',
+        'PIPE',
+        'WHEEL',
+        'ELECTRONICS',
+        'HOME',
+        'COSMETICS',
+        'FAGRILE'
+    ];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -63,6 +73,16 @@ class Active
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $lifetimeMeasurementUnit;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $customAttributes;
 
     public function getId(): ?int
     {
@@ -129,7 +149,7 @@ class Active
         return $this;
     }
 
-    public function getLifetime(): ? string
+    public function getLifetime(): ?string
     {
         return $this->lifetime . ' ' . $this->lifetimeMeasurementUnit;
     }
@@ -141,7 +161,7 @@ class Active
         return $this;
     }
 
-    public function getMeasurementData(): ? string
+    public function getMeasurementData(): ?string
     {
         return $this->measurementData . $this->measurementUnit;
     }
@@ -161,6 +181,34 @@ class Active
     public function setLifetimeMeasurementUnit(?string $lifetimeMeasurementUnit): self
     {
         $this->lifetimeMeasurementUnit = $lifetimeMeasurementUnit;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        if (in_array($type, self::AVAILABLE_TYPES)) {
+            $this->type = $type;
+        } else {
+            throw new InvalidArgumentException("El tipo de activo debe ser uno de los siguientes: " . implode(', ', self::AVAILABLE_TYPES));
+        }
+
+        return $this;
+    }
+
+    public function getCustomAttributes(): ?string
+    {
+        return $this->customAttributes;
+    }
+
+    public function setCustomAttributes(string $customAttributes): self
+    {
+        $this->customAttributes = $customAttributes;
 
         return $this;
     }
