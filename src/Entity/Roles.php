@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Roles
 {
     const ROLE_ADMIN = 'admin';
-    const ROLE_USERS = 'users';
+    const ROLE_USER = 'user';
     const ROLE_TASKMASTER = 'taskmaster';
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\UserRepository;
@@ -170,6 +171,16 @@ class User implements UserInterface, EncoderAwareInterface
      * @Groups({"user"})
      */
     private $token;
+
+    /**
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\JoinColumn(nullable=true)
+     * @ApiProperty(iri="http://schema.org/image")
+     * @Groups({"user", "user.write", "user.update"})
+     */
+    public $image;
 
     public function __construct()
     {
