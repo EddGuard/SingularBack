@@ -229,8 +229,8 @@ class Active
 
         // set (or unset) the owning side of the relation if necessary
         $newActiveId = null === $activeRecord ? null : $this;
-        if ($activeRecord->getActiveId() !== $newActiveId) {
-            $activeRecord->setActiveId($newActiveId);
+        if ($activeRecord->getActive()->getId() !== $newActiveId) {
+            $activeRecord->setActive($newActiveId);
         }
 
         return $this;

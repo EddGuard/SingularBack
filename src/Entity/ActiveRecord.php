@@ -37,12 +37,12 @@ class ActiveRecord
         return $this->id;
     }
 
-    public function getactive(): ?Active
+    public function getActive(): ?Active
     {
         return $this->active;
     }
 
-    public function setactive(?Active $active): self
+    public function setActive(?Active $active): self
     {
         $this->active = $active;
 
