@@ -32,7 +32,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *                                 "type"="object",
  *                                 "properties"={
  *                                     "file"={
- *                                         "type"="string",
+ *                                         "type"="image",
  *                                         "format"="binary"
  *                                     }
  *                                 }
