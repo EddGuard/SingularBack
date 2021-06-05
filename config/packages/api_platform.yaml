@@ -12,6 +12,8 @@ api_platform:
         jsonhal:  ['application/hal+json']
         xml:      ['application/xml', 'text/xml']
         html:     ['text/html']
+        image:    ['image/png']
+
     swagger:
         api_keys:
             apiKey:
