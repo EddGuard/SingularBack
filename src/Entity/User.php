@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
@@ -15,6 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  *  @ApiResource(
@@ -33,7 +37,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"user.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')"
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          },
  *          "delete"={"security"="is_granted('ROLE_ADMIN')"},
  *          "request_password"={
@@ -55,6 +59,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email", "username", "deletedAt"}, ignoreNull=false)
  * @ORM\Table(name="`user`")
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "username": "iexact",
+ *     "name": "iexact",
+ *     "lastname": "iexact",
+ *     "email": "iexact"
+ * })
+ * @ApiFilter(DateFilter::class, properties={"createdAt", "updatedAt"})
+ * @ApiFilter(OrderFilter::class, properties={
+ *     "name",
+ *     "lastname",
+ *     "username",
+ *     "email",
+ *     "createdAt"
+ * }, arguments={"orderParameterName"="order"})
  */
 class User implements UserInterface, EncoderAwareInterface
 {

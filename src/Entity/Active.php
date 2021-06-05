@@ -2,18 +2,56 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Exception\InvalidArgumentException;
 use App\Repository\ActiveRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 /**
- * @ApiResource()
+ * @ApiResource(attributes={
+ *          "normalization_context"={"groups"={"active"}},
+ *      },
+ *      collectionOperations={
+ *          "post"={
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "validation_groups"={"Default", "Create"},
+ *              "denormalization_context"={"groups"={"active.write"}}
+ *          },
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
+ *      },
+ *      itemOperations={
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
+ *          "put"={
+ *              "denormalization_context"={"groups"={"active.update"}},
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *          },
+ *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
+ *      })
  * @ORM\Entity(repositoryClass=ActiveRepository::class)
  * @UniqueEntity(fields={"reference"}, ignoreNull=false)
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "reference": "iexact",
+ *     "type": "iexact",
+ *     "measurementData": "iexact",
+ *     "measurementUnit": "iexact",
+ *     "lifetime": "iexact",
+ *     "estimatedLifetime": "iexact",
+ *     "lifetimeMeasurementUnit": "iexact"
+ * })
+ * @ApiFilter(DateFilter::class, properties={"entryDate"})
+ * @ApiFilter(OrderFilter::class, properties={
+ *     "entryDate",
+ *     "type",
+ *     "lifetime"
+ * }, arguments={"orderParameterName"="order"})
  */
 class Active
 {
@@ -30,62 +68,98 @@ class Active
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({
+     *     "active"
+     * })
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $reference;
 
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", options={"default" = "CURRENT_TIMESTAMP"})
+     * @Groups({
+     *     "active"
+     * })
      */
     private $entryDate;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $measurementData;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $measurementUnit;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $useWearTear;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $estimatedLifetime;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $lifetime;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $lifetimeMeasurementUnit;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $customAttributes;
 
     /**
-     * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="activeId", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="active", cascade={"persist", "remove"})
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
      */
     private $activeRecord;
 
