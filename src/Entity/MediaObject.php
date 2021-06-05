@@ -58,7 +58,9 @@ class MediaObject
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      * @ORM\Id
-     * @Groups({"media_object_read","user", "user.write", "user.update"})
+     * @Groups({"media_object_read",
+     *     "user", "user.write", "user.update",
+     *     "active", "active.write", "active.update"})
      */
     protected $id;
 
@@ -66,7 +68,9 @@ class MediaObject
      * @var string|null
      *
      * @ApiProperty(iri="http://schema.org/contentUrl")
-     * @Groups({"media_object_read","user", "user.write", "user.update"})
+     * @Groups({"media_object_read",
+     *     "user", "user.write", "user.update",
+     *     "active", "active.write", "active.update"})
      */
     public $contentUrl;
 

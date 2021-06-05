@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Exception\InvalidArgumentException;
 use App\Repository\ActiveRepository;
@@ -162,6 +163,16 @@ class Active
      * })
      */
     private $activeRecord;
+
+    /**
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\JoinColumn(nullable=true)
+     * @ApiProperty(iri="http://schema.org/fileFormat")
+     * @Groups({"active", "active.write", "active.update"})
+     */
+    public $file;
 
     public function getId(): ?int
     {
