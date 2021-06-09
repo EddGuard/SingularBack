@@ -463,4 +463,13 @@ class User implements UserInterface, EncoderAwareInterface
     {
         $this->token = $token;
     }
+
+    public function getAvatar()
+    {
+        return ['image' => [
+            'id' => $this->image->getId(),
+            'contentUrl' => $this->image->contentUrl
+            ]
+        ];
+    }
 }
