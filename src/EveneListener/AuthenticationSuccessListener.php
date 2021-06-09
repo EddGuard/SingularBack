@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -20,10 +21,12 @@ class AuthenticationSuccessListener
             return;
         }
 
-        $data['user_data'] = array(
-            'id' => $user->getId(),
-            'username' => $user->getUsername(),
-        );
+        if($user instanceof User) {
+            $data['user_data'] = array(
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+            );
+        }
 
         $event->setData($data);
     }
