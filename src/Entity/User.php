@@ -57,20 +57,18 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *      }
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email", "username", "deletedAt"}, ignoreNull=false)
+ * @UniqueEntity(fields={"username", "deletedAt"}, ignoreNull=false)
  * @ORM\Table(name="`user`")
  * @ApiFilter(SearchFilter::class, properties={
  *     "username": "iexact",
  *     "name": "iexact",
- *     "lastname": "iexact",
- *     "email": "iexact"
+ *     "lastname": "iexact"
  * })
  * @ApiFilter(DateFilter::class, properties={"createdAt", "updatedAt"})
  * @ApiFilter(OrderFilter::class, properties={
  *     "name",
  *     "lastname",
  *     "username",
- *     "email",
  *     "createdAt"
  * }, arguments={"orderParameterName"="order"})
  */
@@ -89,6 +87,7 @@ class User implements UserInterface, EncoderAwareInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email()
      * @Groups({
      *     "user", "user.write", "user.update"
      * })
@@ -116,14 +115,6 @@ class User implements UserInterface, EncoderAwareInterface
      * })
      */
     private $lastName;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({
-     *     "user", "user.write", "user.update"
-     * })
-     */
-    private $email;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Roles", mappedBy="users", cascade={"persist"})
@@ -286,18 +277,6 @@ class User implements UserInterface, EncoderAwareInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
 
         return $this;
     }
