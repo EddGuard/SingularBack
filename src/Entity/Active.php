@@ -56,21 +56,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Active
 {
-    const AVAILABLE_TYPES = [
-        'ENGINE',
-        'PIPE',
-        'WHEEL',
-        'ELECTRONICS',
-        'HOME',
-        'COSMETICS',
-        'FAGRILE'
-    ];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "active"
+     *     "active", "activeType"
      * })
      */
     private $id;
@@ -78,7 +69,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $reference;
@@ -95,7 +86,7 @@ class Active
     /**
      * @ORM\Column(type="float", nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $measurementData;
@@ -103,7 +94,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $measurementUnit;
@@ -111,7 +102,7 @@ class Active
     /**
      * @ORM\Column(type="float", nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $useWearTear;
@@ -119,7 +110,7 @@ class Active
     /**
      * @ORM\Column(type="float", nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $estimatedLifetime;
@@ -127,7 +118,7 @@ class Active
     /**
      * @ORM\Column(type="float")
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $lifetime;
@@ -135,7 +126,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $lifetimeMeasurementUnit;
@@ -143,15 +134,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({
-     *     "active", "active.write", "active.update"
-     * })
-     */
-    private $type;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $customAttributes;
@@ -159,7 +142,7 @@ class Active
     /**
      * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="active", cascade={"persist", "remove"})
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active", "active.write", "active.update", "activeType"
      * })
      */
     private $activeRecord;
@@ -170,9 +153,17 @@ class Active
      * @ORM\ManyToOne(targetEntity=MediaObject::class)
      * @ORM\JoinColumn(nullable=true)
      * @ApiProperty(iri="http://schema.org/fileFormat")
-     * @Groups({"active", "active.write", "active.update"})
+     * @Groups({"active", "active.write", "active.update", "activeType"})
      */
     public $file;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="actives")
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
+     */
+    private $activeType;
 
     public function getId(): ?int
     {
@@ -275,22 +266,6 @@ class Active
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(?string $type): self
-    {
-        if (in_array($type, self::AVAILABLE_TYPES)) {
-            $this->type = $type;
-        } else {
-            throw new InvalidArgumentException("El tipo de activo debe ser uno de los siguientes: " . implode(', ', self::AVAILABLE_TYPES));
-        }
-
-        return $this;
-    }
-
     public function getCustomAttributes(): ?string
     {
         return $this->customAttributes;
@@ -317,6 +292,18 @@ class Active
         if ($activeRecord->getActive()->getId() !== $newActiveId) {
             $activeRecord->setActive($newActiveId);
         }
+
+        return $this;
+    }
+
+    public function getActiveType(): ?ActiveType
+    {
+        return $this->activeType;
+    }
+
+    public function setActiveType(?ActiveType $activeType): self
+    {
+        $this->activeType = $activeType;
 
         return $this;
     }
