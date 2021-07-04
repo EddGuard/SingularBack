@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
         }
         $plainPassword = 'tfg-admin';
 
-        $user->setEmail('admin@tfg.com');
+        //$user->setEmail('admin@tfg.com');
         $user->setName('admin');
         $user->setLastName('admin');
         $user->addGroup($role);
