@@ -50,7 +50,7 @@ class BasicAttributes
     private $value;
 
     /**
-     * @ORM\ManyToMany(targetEntity=activeType::class, inversedBy="basicAttributes")
+     * @ORM\ManyToMany(targetEntity=ActiveType::class, inversedBy="basicAttributes")
      */
     private $activeTypes;
 

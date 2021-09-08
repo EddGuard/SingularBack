@@ -62,7 +62,7 @@ class CustomAttributes
     private $value;
 
     /**
-     * @ORM\ManyToMany(targetEntity=activeType::class, inversedBy="customAttributes")
+     * @ORM\ManyToMany(targetEntity=ActiveType::class, inversedBy="customAttributes")
      */
     private $activeType;
 
