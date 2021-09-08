@@ -7,6 +7,8 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Exception\InvalidArgumentException;
 use App\Repository\ActiveRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -40,18 +42,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity(fields={"reference"}, ignoreNull=false)
  * @ApiFilter(SearchFilter::class, properties={
  *     "reference": "iexact",
- *     "type": "iexact",
- *     "measurementData": "iexact",
- *     "measurementUnit": "iexact",
- *     "lifetime": "iexact",
- *     "estimatedLifetime": "iexact",
- *     "lifetimeMeasurementUnit": "iexact"
+ *     "type": "iexact"
  * })
  * @ApiFilter(DateFilter::class, properties={"entryDate"})
  * @ApiFilter(OrderFilter::class, properties={
  *     "entryDate",
- *     "type",
- *     "lifetime"
+ *     "type"
  * }, arguments={"orderParameterName"="order"})
  */
 class Active
@@ -78,72 +74,13 @@ class Active
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", options={"default" = "CURRENT_TIMESTAMP"})
      * @Groups({
-     *     "active"
+     *     "active", "active.update"
      * })
      */
     private $entryDate;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $measurementData;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $measurementUnit;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $useWearTear;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $estimatedLifetime;
-
-    /**
-     * @ORM\Column(type="float")
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $lifetime;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $lifetimeMeasurementUnit;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
-     */
-    private $customAttributes;
-
-    /**
      * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="active", cascade={"persist", "remove"})
-     * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
-     * })
      */
     private $activeRecord;
 
@@ -164,6 +101,19 @@ class Active
      * })
      */
     private $activeType;
+
+    /**
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="active")
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
+     */
+    private $attributeValues;
+
+    public function __construct()
+    {
+        $this->attributeValues = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -194,90 +144,6 @@ class Active
         return $this;
     }
 
-    public function getMeasurementUnit(): ?string
-    {
-        return $this->measurementUnit;
-    }
-
-    public function setMeasurementUnit(?string $measurementUnit): self
-    {
-        $this->measurementUnit = $measurementUnit;
-
-        return $this;
-    }
-
-    public function getUseWearTear(): ?float
-    {
-        return $this->useWearTear;
-    }
-
-    public function setUseWearTear(?float $useWearTear): self
-    {
-        $this->useWearTear = $useWearTear;
-
-        return $this;
-    }
-
-    public function getEstimatedLifetime(): ?string
-    {
-        return $this->estimatedLifetime . ' ' . $this->lifetimeMeasurementUnit;
-    }
-
-    public function setEstimatedLifetime(?float $estimatedLifetime): self
-    {
-        $this->estimatedLifetime = $estimatedLifetime;
-
-        return $this;
-    }
-
-    public function getLifetime(): ?string
-    {
-        return $this->lifetime . ' ' . $this->lifetimeMeasurementUnit;
-    }
-
-    public function setLifetime(float $lifetime): self
-    {
-        $this->lifetime = $lifetime;
-
-        return $this;
-    }
-
-    public function getMeasurementData(): ?string
-    {
-        return $this->measurementData . $this->measurementUnit;
-    }
-
-    public function setMeasurementData(?float $measurementData): self
-    {
-        $this->measurementData = $measurementData;
-
-        return $this;
-    }
-
-    public function getLifetimeMeasurementUnit(): ?string
-    {
-        return $this->lifetimeMeasurementUnit;
-    }
-
-    public function setLifetimeMeasurementUnit(?string $lifetimeMeasurementUnit): self
-    {
-        $this->lifetimeMeasurementUnit = $lifetimeMeasurementUnit;
-
-        return $this;
-    }
-
-    public function getCustomAttributes(): ?string
-    {
-        return $this->customAttributes;
-    }
-
-    public function setCustomAttributes(string $customAttributes): self
-    {
-        $this->customAttributes = $customAttributes;
-
-        return $this;
-    }
-
     public function getActiveRecord(): ?ActiveRecord
     {
         return $this->activeRecord;
@@ -304,6 +170,36 @@ class Active
     public function setActiveType(?ActiveType $activeType): self
     {
         $this->activeType = $activeType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AttributeValue[]
+     */
+    public function getAttributeValues(): Collection
+    {
+        return $this->attributeValues;
+    }
+
+    public function addAttributeValue(AttributeValue $attributeValue): self
+    {
+        if (!$this->attributeValues->contains($attributeValue)) {
+            $this->attributeValues[] = $attributeValue;
+            $attributeValue->setActive($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttributeValue(AttributeValue $attributeValue): self
+    {
+        if ($this->attributeValues->removeElement($attributeValue)) {
+            // set the owning side to null (unless already changed)
+            if ($attributeValue->getActive() === $this) {
+                $attributeValue->setActive(null);
+            }
+        }
 
         return $this;
     }

@@ -54,16 +54,32 @@ class ActiveType
 
     /**
      * @ORM\OneToMany(targetEntity=Active::class, mappedBy="activeType")
-     * @Groups({
-     *     "activeType", "activeType.write",
-     *     "activeType.update"
-     * })
      */
     private $actives;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=BasicAttributes::class, mappedBy="activeTypes")
+     * @Groups({
+     *     "activeType", "activeType.write",
+     *     "activeType.update", "active"
+     * })
+     */
+    private $basicAttributes;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=CustomAttributes::class, mappedBy="activeType")
+     * @Groups({
+     *     "activeType", "activeType.write",
+     *     "activeType.update", "active"
+     * })
+     */
+    private $customAttributes;
 
     public function __construct()
     {
         $this->actives = new ArrayCollection();
+        $this->basicAttributes = new ArrayCollection();
+        $this->customAttributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,6 +124,60 @@ class ActiveType
             if ($active->getActiveType() === $this) {
                 $active->setActiveType(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BasicAttributes[]
+     */
+    public function getBasicAttributes(): Collection
+    {
+        return $this->basicAttributes;
+    }
+
+    public function addBasicAttribute(BasicAttributes $basicAttribute): self
+    {
+        if (!$this->basicAttributes->contains($basicAttribute)) {
+            $this->basicAttributes[] = $basicAttribute;
+            $basicAttribute->addActiveType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBasicAttribute(BasicAttributes $basicAttribute): self
+    {
+        if ($this->basicAttributes->removeElement($basicAttribute)) {
+            $basicAttribute->removeActiveType($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CustomAttributes[]
+     */
+    public function getCustomAttributes(): Collection
+    {
+        return $this->customAttributes;
+    }
+
+    public function addCustomAttribute(CustomAttributes $customAttribute): self
+    {
+        if (!$this->customAttributes->contains($customAttribute)) {
+            $this->customAttributes[] = $customAttribute;
+            $customAttribute->addActiveType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomAttribute(CustomAttributes $customAttribute): self
+    {
+        if ($this->customAttributes->removeElement($customAttribute)) {
+            $customAttribute->removeActiveType($this);
         }
 
         return $this;
