@@ -41,7 +41,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $this->entityManager->getConnection()->beginTransaction();
             try {
                 $type = $active->getActiveType();
-                
+
                 if(empty($active->getAttributeValues())) {
                     foreach ($type->getBasicAttributes() as $basicAttribute):
                         $attributeValue = new AttributeValue();
