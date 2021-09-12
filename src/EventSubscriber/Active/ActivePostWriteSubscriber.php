@@ -3,6 +3,7 @@
 namespace App\EventSubscriber\Active;
 
 use App\Entity\Active;
+use App\Entity\ActiveRecord;
 use App\Entity\AttributeValue;
 use App\Exception\GeneralException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -42,24 +43,23 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             try {
                 $type = $active->getActiveType();
 
-                if(empty($active->getAttributeValues())) {
-                    foreach ($type->getBasicAttributes() as $basicAttribute):
-                        $attributeValue = new AttributeValue();
-                        $attributeValue->setName($basicAttribute->getName());
-                        $attributeValue->setValue($basicAttribute->getValue());
-                        $this->entityManager->persist($attributeValue);
-                        $active->addAttributeValue($attributeValue);
-                        $this->entityManager->persist($active);
-                    endforeach;
-                    foreach ($type->getCustomAttributes() as $customAttribute):
-                        $attributeValue = new AttributeValue();
-                        $attributeValue->setName($customAttribute->getName());
-                        $attributeValue->setValue($customAttribute->getValue());
-                        $this->entityManager->persist($attributeValue);
-                        $active->addAttributeValue($attributeValue);
-                        $this->entityManager->persist($active);
-                    endforeach;
-                }
+                foreach ($type->getBasicAttributes() as $basicAttribute):
+                    $attributeValue = new AttributeValue();
+                    $attributeValue->setName($basicAttribute->getName());
+                    $attributeValue->setValue($basicAttribute->getValue());
+                    $this->entityManager->persist($attributeValue);
+                    $active->addAttributeValue($attributeValue);
+                    $this->entityManager->persist($active);
+                endforeach;
+                foreach ($type->getCustomAttributes() as $customAttribute):
+                    $attributeValue = new AttributeValue();
+                    $attributeValue->setName($customAttribute->getName());
+                    $attributeValue->setValue($customAttribute->getValue());
+                    $this->entityManager->persist($attributeValue);
+                    $active->addAttributeValue($attributeValue);
+                    $this->entityManager->persist($active);
+                endforeach;
+
 
                 $this->entityManager->flush();
                 $this->entityManager->getConnection()->commit();
@@ -70,6 +70,43 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 throw new GeneralException($exception->getMessage());
             }
+        }
+        elseif ('api_actives_put_item' == $route) {
+            $this->entityManager->getConnection()->beginTransaction();
+
+            $record = $active->getActiveRecord() ? $active->getActiveRecord() : new ActiveRecord();
+            $record->setActive($active);
+
+            $dateRecord = $record->getDateRecord();
+            $dateRecord[] = new \DateTime();
+            $record->setDateRecord($dateRecord);
+
+            $activeObject = $record->getActiveObject();
+
+            $attributeValues = [];
+            foreach ($active->getAttributeValues() as $key=>$attributeValue){
+                $attributeValues[$key]["name"] = $attributeValue->getName();
+                $attributeValues[$key]["value"] = $attributeValue->getValue();
+            }
+
+            $activeToSave = (object) [
+                "reference" => $active->getReference(),
+                "entry_date" => $active->getEntryDate(),
+                "type" => $active->getActiveType(),
+                "attribute_values" => $attributeValues
+            ];
+            $activeObject[] = $activeToSave;
+            $record->setActiveObject($activeObject);
+
+            $this->entityManager->persist($record);
+
+            $active->setActiveRecord($record);
+
+            $this->entityManager->persist($active);
+
+            $this->entityManager->flush();
+
+            $this->entityManager->getConnection()->commit();
         }
     }
 
