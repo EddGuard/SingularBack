@@ -2,10 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ActiveRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(attributes={
+ *          "normalization_context"={"groups"={"activeRecord"}},
+ *      },
+ *      collectionOperations={
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
+ *      },
+ *      itemOperations={
+ *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"}
+ *      })
  * @ORM\Entity(repositoryClass=ActiveRecordRepository::class)
  */
 class ActiveRecord
@@ -14,23 +25,35 @@ class ActiveRecord
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({
+     *     "active", "activeRecord"
+     * })
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=Active::class, inversedBy="activeRecord", cascade={"persist", "remove"})
+     * @Groups({
+     *     "activeRecord"
+     * })
      */
     private $active;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="array")
+     * @Groups({
+     *     "activeRecord"
+     * })
      */
     private $dateRecord = [];
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="array")
+     * @Groups({
+     *     "activeRecord"
+     * })
      */
-    private $activeObject;
+    private $activeObject = [];
 
     public function getId(): ?int
     {
@@ -54,19 +77,19 @@ class ActiveRecord
         return $this->dateRecord;
     }
 
-    public function setDateRecord(?array $dateRecord): self
+    public function setDateRecord(array $dateRecord): self
     {
         $this->dateRecord = $dateRecord;
 
         return $this;
     }
 
-    public function getActiveObject(): ?string
+    public function getActiveObject(): ?array
     {
         return $this->activeObject;
     }
 
-    public function setActiveObject(?string $activeObject): self
+    public function setActiveObject(array $activeObject): self
     {
         $this->activeObject = $activeObject;
 

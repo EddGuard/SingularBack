@@ -57,7 +57,7 @@ class Active
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "active", "activeType"
+     *     "active", "activeType", "activeRecord"
      * })
      */
     private $id;
@@ -65,7 +65,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({
-     *     "active", "active.write", "active.update", "activeType"
+     *     "active", "active.write", "active.update", "activeType", "activeRecord"
      * })
      */
     private $reference;

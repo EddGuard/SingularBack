@@ -89,12 +89,13 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $attributeValues[$key]["value"] = $attributeValue->getValue();
             }
 
-            $activeToSave = (object) [
+            $activeToSave = [
                 "reference" => $active->getReference(),
                 "entry_date" => $active->getEntryDate(),
                 "type" => $active->getActiveType(),
                 "attribute_values" => $attributeValues
             ];
+            $activeToSave = json_encode($activeToSave);
             $activeObject[] = $activeToSave;
             $record->setActiveObject($activeObject);
 
