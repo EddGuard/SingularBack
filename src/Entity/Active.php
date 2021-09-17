@@ -81,6 +81,9 @@ class Active
 
     /**
      * @ORM\OneToOne(targetEntity=ActiveRecord::class, mappedBy="active", cascade={"persist", "remove"})
+     * @Groups({
+     *     "active"
+     * })
      */
     private $activeRecord;
 
