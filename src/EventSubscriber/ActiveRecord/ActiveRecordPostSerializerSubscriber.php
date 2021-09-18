@@ -52,7 +52,7 @@ class ActiveRecordPostSerializerSubscriber implements EventSubscriberInterface
         $recordResult = $event->getControllerResult();
         $recordResult = json_decode($recordResult, true);
 
-        if ('api_active_record_get_collection' === $route ) {
+        if ('api_active_records_get_collection' === $route ) {
             foreach ($recordResult as &$record) {
                 $record = $this->activeRecordService->formatNormalize($record);
             }
