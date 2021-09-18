@@ -19,6 +19,20 @@ class ActiveRecordRepository extends ServiceEntityRepository
         parent::__construct($registry, ActiveRecord::class);
     }
 
+    /**
+     * @param $value
+     * @return ActiveRecord|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneById($value): ?ActiveRecord
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.id = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
     // /**
     //  * @return ActiveRecord[] Returns an array of ActiveRecord objects
     //  */

@@ -41,6 +41,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $this->entityManager->getConnection()->beginTransaction();
             try {
+                //Seteo de attribute values definidos por defecto en el type al activo
                 $type = $active->getActiveType();
 
                 foreach ($type->getBasicAttributes() as $basicAttribute):
@@ -59,6 +60,41 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     $active->addAttributeValue($attributeValue);
                     $this->entityManager->persist($active);
                 endforeach;
+                $this->entityManager->flush();
+
+
+                //Creación de primera entrada en el registro del activo
+
+                $record = new ActiveRecord();
+                $record->setActive($active);
+
+                $dateRecord = $record->getDateRecord();
+                $dateRecord[] = new \DateTime();
+                $record->setDateRecord($dateRecord);
+
+                $activeObject = $record->getActiveObject();
+
+                $attributeValues = [];
+                foreach ($active->getAttributeValues() as $key=>$attributeValue){
+                    $attributeValues[$key]["name"] = $attributeValue->getName();
+                    $attributeValues[$key]["value"] = $attributeValue->getValue();
+                }
+                $type = [];
+                $type["id"] = $active->getActiveType()->getId();
+                $type["name"] = $active->getActiveType()->getName();
+
+                $activeToSave = new \stdClass();
+                $activeToSave->reference = $active->getReference();
+                $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
+                $activeToSave->type = $type;
+                $activeToSave->attribute_values = $attributeValues;
+
+                $activeObject[] = $activeToSave;
+                $record->setActiveObject($activeObject);
+
+                $this->entityManager->persist($record);
+
+                $active->setActiveRecord($record);
 
 
                 $this->entityManager->flush();
@@ -88,14 +124,16 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $attributeValues[$key]["name"] = $attributeValue->getName();
                 $attributeValues[$key]["value"] = $attributeValue->getValue();
             }
+            $type = [];
+            $type["id"] = $active->getActiveType()->getId();
+            $type["name"] = $active->getActiveType()->getName();
 
-            $activeToSave = [
-                "reference" => $active->getReference(),
-                "entry_date" => $active->getEntryDate(),
-                "type" => $active->getActiveType(),
-                "attribute_values" => $attributeValues
-            ];
-            $activeToSave = json_encode($activeToSave);
+            $activeToSave = new \stdClass();
+            $activeToSave->reference = $active->getReference();
+            $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
+            $activeToSave->type = $type;
+            $activeToSave->attribute_values = $attributeValues;
+
             $activeObject[] = $activeToSave;
             $record->setActiveObject($activeObject);
 
