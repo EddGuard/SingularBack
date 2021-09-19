@@ -92,7 +92,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $activeToSave = new \stdClass();
                 $activeToSave->reference = $active->getReference();
                 $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
-                $activeToSave->file = $active->getFile()->getContentUrl();
+                $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
                 $activeToSave->type = $type;
                 $activeToSave->basic_attributes = $basicAttributes;
                 $activeToSave->custom_attributes = $customAttributes;
@@ -144,7 +144,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $activeToSave = new \stdClass();
             $activeToSave->reference = $active->getReference();
             $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
-            $activeToSave->file = $active->getFile()->getContentUrl();
+            $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
             $activeToSave->type = $type;
             $activeToSave->basic_attributes = $basicAttributes;
             $activeToSave->custom_attributes = $customAttributes;
