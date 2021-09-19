@@ -93,4 +93,9 @@ class MediaObject
     {
         return $this->id;
     }
+
+    public function getContentUrl(): ?string
+    {
+        return "/media/" . $this->filePath;
+    }
 }

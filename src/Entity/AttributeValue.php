@@ -58,10 +58,16 @@ class AttributeValue
     private $value;
 
     /**
-     * @ORM\ManyToOne(targetEntity=active::class, inversedBy="attributeValues")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=active::class, inversedBy="basicAttributes")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $active;
+    private $activeBasics;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=active::class, inversedBy="customAttributes")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $activeCustoms;
 
     public function getId(): ?int
     {
@@ -92,14 +98,26 @@ class AttributeValue
         return $this;
     }
 
-    public function getActive(): ?active
+    public function getActiveBasics(): ?active
     {
-        return $this->active;
+        return $this->activeBasics;
     }
 
-    public function setActive(?active $active): self
+    public function setActiveBasics(?active $active): self
     {
-        $this->active = $active;
+        $this->activeBasics = $active;
+
+        return $this;
+    }
+
+    public function getActiveCustoms(): ?active
+    {
+        return $this->activeCustoms;
+    }
+
+    public function setActiveCustoms(?active $active): self
+    {
+        $this->activeCustoms = $active;
 
         return $this;
     }

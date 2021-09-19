@@ -10,6 +10,7 @@ use App\Repository\ActiveRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\MediaObject;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
@@ -90,7 +91,7 @@ class Active
     /**
      * @var MediaObject|null
      *
-     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\ManyToOne(targetEntity=MediaObject::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      * @ApiProperty(iri="http://schema.org/fileFormat")
      * @Groups({"active", "active.write", "active.update", "activeType"})
@@ -106,12 +107,20 @@ class Active
     private $activeType;
 
     /**
-     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="active")
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeBasics")
      * @Groups({
      *     "active", "active.write", "active.update"
      * })
      */
-    private $attributeValues;
+    private $basicAttributes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeCustoms")
+     * @Groups({
+     *     "active", "active.write", "active.update"
+     * })
+     */
+    private $customAttributes;
 
     public function __construct()
     {
@@ -180,30 +189,64 @@ class Active
     /**
      * @return Collection|AttributeValue[]
      */
-    public function getAttributeValues(): Collection
+    public function getBasicAttributes(): Collection
     {
-        return $this->attributeValues;
+        return $this->basicAttributes;
     }
 
-    public function addAttributeValue(AttributeValue $attributeValue): self
+    public function addBasicAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->attributeValues->contains($attributeValue)) {
-            $this->attributeValues[] = $attributeValue;
-            $attributeValue->setActive($this);
+        if (!$this->basicAttributes->contains($attributeValue)) {
+            $this->basicAttributes[] = $attributeValue;
+            $attributeValue->setActiveBasics($this);
         }
 
         return $this;
     }
 
-    public function removeAttributeValue(AttributeValue $attributeValue): self
+    public function removeBasicAttributes(AttributeValue $attributeValue): self
     {
-        if ($this->attributeValues->removeElement($attributeValue)) {
+        if ($this->basicAttributes->removeElement($attributeValue)) {
             // set the owning side to null (unless already changed)
-            if ($attributeValue->getActive() === $this) {
-                $attributeValue->setActive(null);
+            if ($attributeValue->getActiveBasics() === $this) {
+                $attributeValue->setActiveBasics(null);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|AttributeValue[]
+     */
+    public function getCustomAttributes(): Collection
+    {
+        return $this->customAttributes;
+    }
+
+    public function addCustomAttributes(AttributeValue $attributeValue): self
+    {
+        if (!$this->customAttributes->contains($attributeValue)) {
+            $this->customAttributes[] = $attributeValue;
+            $attributeValue->setActiveCustoms($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomAttributes(AttributeValue $attributeValue): self
+    {
+        if ($this->customAttributes->removeElement($attributeValue)) {
+            // set the owning side to null (unless already changed)
+            if ($attributeValue->getActiveCustoms() === $this) {
+                $attributeValue->setActiveCustoms(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFile(){
+        return $this->file;
     }
 }
