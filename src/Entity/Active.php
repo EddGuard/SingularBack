@@ -107,7 +107,7 @@ class Active
     private $activeType;
 
     /**
-     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeBasics", cascade={"delete"})
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeBasics", cascade={"remove"})
      * @Groups({
      *     "active", "active.write", "active.update"
      * })
@@ -115,7 +115,7 @@ class Active
     private $basicAttributes;
 
     /**
-     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeCustoms", cascade={"delete"})
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeCustoms", cascade={"remove"})
      * @Groups({
      *     "active", "active.write", "active.update"
      * })
