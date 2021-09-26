@@ -66,6 +66,14 @@ class CustomAttributes
      */
     private $activeType;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="customAttributes")
+     * @Groups({
+     *     "customAttribute", "activeType", "active"
+     * })
+     */
+    private $unit;
+
     public function __construct()
     {
         $this->activeType = new ArrayCollection();
@@ -120,6 +128,18 @@ class CustomAttributes
     public function removeActiveType(activeType $activeType): self
     {
         $this->activeType->removeElement($activeType);
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): self
+    {
+        $this->unit = $unit;
 
         return $this;
     }

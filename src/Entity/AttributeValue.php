@@ -69,6 +69,14 @@ class AttributeValue
      */
     private $activeCustoms;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="attributeValues")
+     * @Groups({
+     *     "attributeValue", "activeType", "active"
+     * })
+     */
+    private $unit;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -118,6 +126,18 @@ class AttributeValue
     public function setActiveCustoms(?active $active): self
     {
         $this->activeCustoms = $active;
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): self
+    {
+        $this->unit = $unit;
 
         return $this;
     }

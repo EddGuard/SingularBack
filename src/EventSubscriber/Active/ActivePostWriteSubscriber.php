@@ -48,6 +48,9 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     $attributeValue = new AttributeValue();
                     $attributeValue->setName($basicAttribute->getName());
                     $attributeValue->setValue($basicAttribute->getValue());
+                    if (!empty($basicAttribute->getUnit())){
+                        $attributeValue->setUnit($basicAttribute->getUnit());
+                    }
                     $this->entityManager->persist($attributeValue);
                     $active->addBasicAttributes($attributeValue);
                     $this->entityManager->persist($active);
@@ -56,6 +59,9 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     $attributeValue = new AttributeValue();
                     $attributeValue->setName($customAttribute->getName());
                     $attributeValue->setValue($customAttribute->getValue());
+                    if (!empty($customAttribute->getUnit())){
+                        $attributeValue->setUnit($customAttribute->getUnit());
+                    }
                     $this->entityManager->persist($attributeValue);
                     $active->addCustomAttributes($attributeValue);
                     $this->entityManager->persist($active);
@@ -78,12 +84,24 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 foreach ($active->getBasicAttributes() as $key=>$attributeValue){
                     $basicAttributes[$key]["name"] = $attributeValue->getName();
                     $basicAttributes[$key]["value"] = $attributeValue->getValue();
+                    if (!empty($attributeValue->getUnit())){
+                        $basicAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
+                        $basicAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
+                    }else{
+                        $basicAttributes[$key]["unit"] = null;
+                    }
                 }
 
                 $customAttributes = [];
                 foreach ($active->getCustomAttributes() as $key=>$attributeValue){
                     $customAttributes[$key]["name"] = $attributeValue->getName();
                     $customAttributes[$key]["value"] = $attributeValue->getValue();
+                    if (!empty($attributeValue->getUnit())){
+                        $customAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
+                        $customAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
+                    }else{
+                        $customAttributes[$key]["unit"] = null;
+                    }
                 }
                 $type = [];
                 $type["id"] = $active->getActiveType()->getId();
@@ -130,12 +148,24 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             foreach ($active->getBasicAttributes() as $key=>$attributeValue){
                 $basicAttributes[$key]["name"] = $attributeValue->getName();
                 $basicAttributes[$key]["value"] = $attributeValue->getValue();
+                if (!empty($attributeValue->getUnit())){
+                    $basicAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
+                    $basicAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
+                }else{
+                    $basicAttributes[$key]["unit"] = null;
+                }
             }
 
             $customAttributes = [];
             foreach ($active->getCustomAttributes() as $key=>$attributeValue){
                 $customAttributes[$key]["name"] = $attributeValue->getName();
                 $customAttributes[$key]["value"] = $attributeValue->getValue();
+                if (!empty($attributeValue->getUnit())){
+                    $customAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
+                    $customAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
+                }else{
+                    $customAttributes[$key]["unit"] = null;
+                }
             }
             $type = [];
             $type["id"] = $active->getActiveType()->getId();

@@ -54,6 +54,14 @@ class BasicAttributes
      */
     private $activeTypes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="basicAttributes")
+     * @Groups({
+     *     "basicAttribute", "activeType", "active"
+     * })
+     */
+    private $unit;
+
     public function __construct()
     {
         $this->activeTypes = new ArrayCollection();
@@ -108,6 +116,18 @@ class BasicAttributes
     public function removeActiveType(activeType $activeType): self
     {
         $this->activeTypes->removeElement($activeType);
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): self
+    {
+        $this->unit = $unit;
 
         return $this;
     }
