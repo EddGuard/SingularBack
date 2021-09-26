@@ -64,19 +64,19 @@ class Unit
     private $readOnly;
 
     /**
-     * @ORM\OneToMany(targetEntity=attributeValue::class, mappedBy="unit")
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="unit")
      * @Groups({"unit"})
      */
     private $attributeValues;
 
     /**
-     * @ORM\OneToMany(targetEntity=basicAttributes::class, mappedBy="unit")
+     * @ORM\OneToMany(targetEntity=BasicAttributes::class, mappedBy="unit")
      * @Groups({"unit"})
      */
     private $basicAttributes;
 
     /**
-     * @ORM\OneToMany(targetEntity=customAttributes::class, mappedBy="unit")
+     * @ORM\OneToMany(targetEntity=CustomAttributes::class, mappedBy="unit")
      * @Groups({"unit"})
      */
     private $customAttributes;

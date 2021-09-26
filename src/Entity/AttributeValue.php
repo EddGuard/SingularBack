@@ -58,13 +58,13 @@ class AttributeValue
     private $value;
 
     /**
-     * @ORM\ManyToOne(targetEntity=active::class, inversedBy="basicAttributes")
+     * @ORM\ManyToOne(targetEntity=Active::class, inversedBy="basicAttributes")
      * @ORM\JoinColumn(nullable=true)
      */
     private $activeBasics;
 
     /**
-     * @ORM\ManyToOne(targetEntity=active::class, inversedBy="customAttributes")
+     * @ORM\ManyToOne(targetEntity=Active::class, inversedBy="customAttributes")
      * @ORM\JoinColumn(nullable=true)
      */
     private $activeCustoms;
