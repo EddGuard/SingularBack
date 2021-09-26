@@ -28,7 +28,7 @@ class BasicAttributes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "basicAttribute", "activeType", "active"
+     *     "basicAttribute", "activeType", "active", "unit"
      * })
      */
     private $id;
@@ -36,7 +36,7 @@ class BasicAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * * @Groups({
-     *     "basicAttribute", "activeType", "active"
+     *     "basicAttribute", "activeType", "active", "unit"
      * })
      */
     private $name;
@@ -44,7 +44,7 @@ class BasicAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * * @Groups({
-     *     "basicAttribute", "activeType", "active"
+     *     "basicAttribute", "activeType", "active", "unit"
      * })
      */
     private $value;

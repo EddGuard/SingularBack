@@ -38,7 +38,7 @@ class CustomAttributes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "customAttribute", "activeType", "active"
+     *     "customAttribute", "activeType", "active", "unit"
      * })
      */
     private $id;
@@ -46,7 +46,7 @@ class CustomAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "customAttribute", "activeType", "active",
+     *     "customAttribute", "activeType", "active", "unit",
      *     "customAttribute.write", "customAttribute.update"
      * })
      */
@@ -55,7 +55,7 @@ class CustomAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "customAttribute", "activeType", "active",
+     *     "customAttribute", "activeType", "active", "unit",
      *     "customAttribute.write", "customAttribute.update"
      * })
      */

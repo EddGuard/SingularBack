@@ -36,7 +36,7 @@ class AttributeValue
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "attributeValue", "activeType", "active"
+     *     "attributeValue", "activeType", "active", "unit"
      * })
      */
     private $id;
@@ -44,7 +44,7 @@ class AttributeValue
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "attributeValue", "activeType", "active"
+     *     "attributeValue", "activeType", "active", "unit"
      * })
      */
     private $name;
@@ -52,7 +52,7 @@ class AttributeValue
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "attributeValue", "activeType", "active"
+     *     "attributeValue", "activeType", "active", "unit"
      * })
      */
     private $value;
