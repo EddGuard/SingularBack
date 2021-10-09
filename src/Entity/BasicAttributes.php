@@ -36,7 +36,7 @@ class BasicAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * * @Groups({
-     *     "basicAttribute", "activeType", "active", "unit"
+     *     "basicAttribute", "activeType", "active", "unit", "activeType.write", "activeType.update"
      * })
      */
     private $name;
@@ -44,7 +44,7 @@ class BasicAttributes
     /**
      * @ORM\Column(type="string", length=255)
      * * @Groups({
-     *     "basicAttribute", "activeType", "active", "unit"
+     *     "basicAttribute", "activeType", "active", "unit", "activeType.write", "activeType.update"
      * })
      */
     private $value;
@@ -57,7 +57,7 @@ class BasicAttributes
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="basicAttributes")
      * @Groups({
-     *     "basicAttribute", "activeType", "active"
+     *     "basicAttribute", "activeType", "active", "activeType.write", "activeType.update"
      * })
      */
     private $unit;

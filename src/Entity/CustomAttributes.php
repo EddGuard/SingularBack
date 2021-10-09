@@ -47,7 +47,7 @@ class CustomAttributes
      * @ORM\Column(type="string", length=255)
      * @Groups({
      *     "customAttribute", "activeType", "active", "unit",
-     *     "customAttribute.write", "customAttribute.update"
+     *     "customAttribute.write", "customAttribute.update", "activeType.write", "activeType.update"
      * })
      */
     private $name;
@@ -56,7 +56,7 @@ class CustomAttributes
      * @ORM\Column(type="string", length=255)
      * @Groups({
      *     "customAttribute", "activeType", "active", "unit",
-     *     "customAttribute.write", "customAttribute.update"
+     *     "customAttribute.write", "customAttribute.update", "activeType.write", "activeType.update"
      * })
      */
     private $value;
@@ -69,7 +69,7 @@ class CustomAttributes
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="customAttributes")
      * @Groups({
-     *     "customAttribute", "activeType", "active"
+     *     "customAttribute", "activeType", "active", "activeType.write", "activeType.update"
      * })
      */
     private $unit;
