@@ -28,7 +28,7 @@ class BasicAttributes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "basicAttribute", "activeType", "active", "unit"
+     *     "basicAttribute", "activeType", "active", "unit", "activeType.write", "activeType.update"
      * })
      */
     private $id;

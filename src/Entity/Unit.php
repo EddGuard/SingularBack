@@ -38,7 +38,7 @@ class Unit
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "unit", "attributeValue", "activeType", "active", "basicAttribute", "customAttribute"
+     *     "unit", "attributeValue", "activeType", "active", "basicAttribute", "customAttribute", "activeType.write", "activeType.update"
      * })
      */
     private $id;

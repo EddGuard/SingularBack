@@ -38,7 +38,7 @@ class CustomAttributes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "customAttribute", "activeType", "active", "unit"
+     *     "customAttribute", "activeType", "active", "unit", "activeType.write", "activeType.update"
      * })
      */
     private $id;
