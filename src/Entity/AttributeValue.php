@@ -36,7 +36,7 @@ class AttributeValue
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "attributeValue", "activeType", "active", "unit"
+     *     "attributeValue", "activeType", "active", "unit", "active.write", "active.update", "activeType.write", "activeType.update"
      * })
      */
     private $id;
@@ -44,7 +44,7 @@ class AttributeValue
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "attributeValue", "activeType", "active", "unit"
+     *     "attributeValue", "activeType", "active", "unit", "active.write", "active.update", "activeType.write", "activeType.update"
      * })
      */
     private $name;
@@ -52,7 +52,7 @@ class AttributeValue
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "attributeValue", "activeType", "active", "unit"
+     *     "attributeValue", "activeType", "active", "unit", "active.write", "active.update", "activeType.write", "activeType.update"
      * })
      */
     private $value;
@@ -68,6 +68,18 @@ class AttributeValue
      * @ORM\JoinColumn(nullable=true)
      */
     private $activeCustoms;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="basicAttributes")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $activeTypeBasics;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="customAttributes")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $activeTypeCustoms;
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="attributeValues")
@@ -127,6 +139,30 @@ class AttributeValue
     public function setActiveCustoms(?active $active): self
     {
         $this->activeCustoms = $active;
+
+        return $this;
+    }
+
+    public function getActiveTypeBasics(): ?activeType
+    {
+        return $this->activeTypeBasics;
+    }
+
+    public function setActiveTypeBasics(?activeType $activeType): self
+    {
+        $this->activeTypeBasics = $activeType;
+
+        return $this;
+    }
+
+    public function getActiveTypeCustoms(): ?activeType
+    {
+        return $this->activeTypeCustoms;
+    }
+
+    public function setActiveTypeCustoms(?activeType $activeType): self
+    {
+        $this->activeTypeCustoms = $activeType;
 
         return $this;
     }

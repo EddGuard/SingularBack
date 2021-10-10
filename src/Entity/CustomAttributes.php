@@ -62,11 +62,6 @@ class CustomAttributes
     private $value;
 
     /**
-     * @ORM\ManyToMany(targetEntity=ActiveType::class, inversedBy="customAttributes")
-     */
-    private $activeType;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="customAttributes")
      * @Groups({
      *     "customAttribute", "activeType", "active", "activeType.write", "activeType.update",
@@ -105,30 +100,6 @@ class CustomAttributes
     public function setValue(string $value): self
     {
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|activeType[]
-     */
-    public function getActiveType(): Collection
-    {
-        return $this->activeType;
-    }
-
-    public function addActiveType(activeType $activeType): self
-    {
-        if (!$this->activeType->contains($activeType)) {
-            $this->activeType[] = $activeType;
-        }
-
-        return $this;
-    }
-
-    public function removeActiveType(activeType $activeType): self
-    {
-        $this->activeType->removeElement($activeType);
 
         return $this;
     }

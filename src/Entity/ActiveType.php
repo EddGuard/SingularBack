@@ -58,7 +58,7 @@ class ActiveType
     private $actives;
 
     /**
-     * @ORM\ManyToMany(targetEntity=BasicAttributes::class, mappedBy="activeTypes")
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeTypeBasics", cascade={"remove"})
      * @Groups({
      *     "activeType", "activeType.write",
      *     "activeType.update", "active"
@@ -67,7 +67,7 @@ class ActiveType
     private $basicAttributes;
 
     /**
-     * @ORM\ManyToMany(targetEntity=CustomAttributes::class, mappedBy="activeType")
+     * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeTypeCustoms", cascade={"remove"})
      * @Groups({
      *     "activeType", "activeType.write",
      *     "activeType.update", "active"
@@ -130,54 +130,60 @@ class ActiveType
     }
 
     /**
-     * @return Collection|BasicAttributes[]
+     * @return Collection|AttributeValue[]
      */
     public function getBasicAttributes(): Collection
     {
         return $this->basicAttributes;
     }
 
-    public function addBasicAttribute(BasicAttributes $basicAttribute): self
+    public function addBasicAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->basicAttributes->contains($basicAttribute)) {
-            $this->basicAttributes[] = $basicAttribute;
-            $basicAttribute->addActiveType($this);
+        if (!$this->basicAttributes->contains($attributeValue)) {
+            $this->basicAttributes[] = $attributeValue;
+            $attributeValue->setActiveTypeBasics($this);
         }
 
         return $this;
     }
 
-    public function removeBasicAttribute(BasicAttributes $basicAttribute): self
+    public function removeBasicAttributes(AttributeValue $attributeValue): self
     {
-        if ($this->basicAttributes->removeElement($basicAttribute)) {
-            $basicAttribute->removeActiveType($this);
+        if ($this->basicAttributes->removeElement($attributeValue)) {
+            // set the owning side to null (unless already changed)
+            if ($attributeValue->getActiveTypeBasics() === $this) {
+                $attributeValue->setActiveTypeBasics(null);
+            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|CustomAttributes[]
+     * @return Collection|AttributeValue[]
      */
     public function getCustomAttributes(): Collection
     {
         return $this->customAttributes;
     }
 
-    public function addCustomAttribute(CustomAttributes $customAttribute): self
+    public function addCustomAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->customAttributes->contains($customAttribute)) {
-            $this->customAttributes[] = $customAttribute;
-            $customAttribute->addActiveType($this);
+        if (!$this->customAttributes->contains($attributeValue)) {
+            $this->customAttributes[] = $attributeValue;
+            $attributeValue->setActiveTypeCustoms($this);
         }
 
         return $this;
     }
 
-    public function removeCustomAttribute(CustomAttributes $customAttribute): self
+    public function removeCustomAttributes(AttributeValue $attributeValue): self
     {
-        if ($this->customAttributes->removeElement($customAttribute)) {
-            $customAttribute->removeActiveType($this);
+        if ($this->customAttributes->removeElement($attributeValue)) {
+            // set the owning side to null (unless already changed)
+            if ($attributeValue->getActiveTypeCustoms() === $this) {
+                $attributeValue->setActiveTypeCustoms(null);
+            }
         }
 
         return $this;

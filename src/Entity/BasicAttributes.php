@@ -50,11 +50,6 @@ class BasicAttributes
     private $value;
 
     /**
-     * @ORM\ManyToMany(targetEntity=ActiveType::class, inversedBy="basicAttributes")
-     */
-    private $activeTypes;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="basicAttributes")
      * @Groups({
      *     "basicAttribute", "activeType", "active", "activeType.write", "activeType.update",
@@ -93,30 +88,6 @@ class BasicAttributes
     public function setValue(string $value): self
     {
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|activeType[]
-     */
-    public function getActiveTypes(): Collection
-    {
-        return $this->activeTypes;
-    }
-
-    public function addActiveType(activeType $activeType): self
-    {
-        if (!$this->activeTypes->contains($activeType)) {
-            $this->activeTypes[] = $activeType;
-        }
-
-        return $this;
-    }
-
-    public function removeActiveType(activeType $activeType): self
-    {
-        $this->activeTypes->removeElement($activeType);
 
         return $this;
     }
