@@ -7,9 +7,10 @@ use App\Repository\BasicAttributesRepository;
 use App\Repository\UnitRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class UnitFixtues extends Fixture implements FixtureGroupInterface
+class UnitFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
 
     /**
@@ -77,5 +78,13 @@ class UnitFixtues extends Fixture implements FixtureGroupInterface
     public static function getGroups(): array
     {
         return ['units'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDependencies()
+    {
+        return [AttributeFixtures::class];
     }
 }

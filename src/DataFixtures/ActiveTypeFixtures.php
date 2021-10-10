@@ -3,14 +3,16 @@
 namespace App\DataFixtures;
 
 use App\Entity\ActiveType;
+use App\Entity\AttributeValue;
 use App\Entity\BasicAttributes;
 use App\Repository\BasicAttributesRepository;
 use ContainerIh0zBIx\getBasicAttributesRepositoryService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ActiveTypeFixtures extends Fixture implements FixtureGroupInterface
+class ActiveTypeFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     /**
      * @var BasicAttributesRepository
@@ -32,7 +34,14 @@ class ActiveTypeFixtures extends Fixture implements FixtureGroupInterface
         $basicAttributes = $this->basicAttributesRepository->findAll();
 
         foreach ($basicAttributes as $basicAttribute):
-            $defaultType->addBasicAttribute($basicAttribute);
+            $attribute = new AttributeValue();
+
+            $attribute->setName($basicAttribute->getName());
+            $attribute->setValue($basicAttribute->getValue());
+            $attribute->setUnit($basicAttribute->getUnit());
+            $manager->persist($attribute);
+
+            $defaultType->addBasicAttributes($attribute);
             $manager->persist($defaultType);
         endforeach;
 
@@ -45,5 +54,13 @@ class ActiveTypeFixtures extends Fixture implements FixtureGroupInterface
     public static function getGroups(): array
     {
         return ['types'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDependencies()
+    {
+        return [AttributeFixtures::class];
     }
 }
