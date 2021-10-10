@@ -72,7 +72,8 @@ class AttributeValue
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="attributeValues")
      * @Groups({
-     *     "attributeValue", "activeType", "active"
+     *     "attributeValue", "activeType", "active", "attributeValue.write", "attributeValue.update",
+     *     "activeType.write", "active.write", "activeType.update", "active.update"
      * })
      */
     private $unit;

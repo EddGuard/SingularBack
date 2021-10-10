@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- *  @ApiResource(attributes={
+ * @ApiResource(attributes={
  *          "normalization_context"={"groups"={"customAttribute"}},
  *      },
  *      collectionOperations={
@@ -69,7 +69,8 @@ class CustomAttributes
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="customAttributes")
      * @Groups({
-     *     "customAttribute", "activeType", "active", "activeType.write", "activeType.update"
+     *     "customAttribute", "activeType", "active", "activeType.write", "activeType.update",
+     *      "customAttribute.write", "customAttribute.update"
      * })
      */
     private $unit;

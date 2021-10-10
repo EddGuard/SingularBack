@@ -57,7 +57,8 @@ class BasicAttributes
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="basicAttributes")
      * @Groups({
-     *     "basicAttribute", "activeType", "active", "activeType.write", "activeType.update"
+     *     "basicAttribute", "activeType", "active", "activeType.write", "activeType.update",
+     *      "basicAttribute.write", "basicAttribute.update"
      * })
      */
     private $unit;
