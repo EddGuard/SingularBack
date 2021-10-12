@@ -43,7 +43,8 @@ class UnitFixtures extends Fixture implements FixtureGroupInterface, DependentFi
             "Km",
             "m",
             "g",
-            "ml"
+            "ml",
+            "%"
         ];
 
         foreach ($defaultUnits as $defaultUnit):
@@ -65,6 +66,10 @@ class UnitFixtures extends Fixture implements FixtureGroupInterface, DependentFi
             }
             if (in_array($basicAttributes->getName(),["estimatedLifetime", "lifetime"])){
                 $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "Year/s"]));
+                $manager->persist($basicAttributes);
+            }
+            if ($basicAttributes->getName() == "useWearTear"){
+                $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "%"]));
                 $manager->persist($basicAttributes);
             }
         endforeach;
