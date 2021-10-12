@@ -54,76 +54,78 @@ class ActiveTypePreWriteSubscriber implements EventSubscriberInterface
         if (!($type instanceof ActiveType)) {
             return;
         }
-        foreach ($content as $key => $field):
-            if ($key == 'name') {
-                $type->setName($field);
-            }
-            if ($key == 'basicAttributes') {
-                foreach ($field as $item) {
-                    $attributeVal = null;
-                    if (property_exists($item, 'id')) {
-                        $attributeVal = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeTypeBasics" => $type]);
-                    }
-                    if(empty($attributeVal)){
-                        $attributeVal = new AttributeValue();
-                    }
-                    $attributeVal->setName($item->name);
-                    $attributeVal->setValue($item->value);
-                    if (property_exists($item, "unit") && !empty($item->unit)) {
-                        $unit = null;
-                        if (property_exists($item->unit, "id")) {
-                            $unit = $this->unitRepository->find($item->unit->id);
-                        }
-                        if (empty($unit)){
-                            $unit = new Unit();
-                        }
-                        $unit->setName($item->unit->name);
-                        if (property_exists($item->unit, "readOnly")) {
-                            $unit->setReadOnly($item->unit->readOnly);
-                        } else {
-                            $unit->setReadOnly(false);
-                        }
-                        $this->entityManager->persist($unit);
-                        $attributeVal->setUnit($unit);
-                    }
-                    $this->entityManager->persist($attributeVal);
-                    $type->addBasicAttributes($attributeVal);
-                    $this->entityManager->persist($type);
+        if ('api_activeTypes_post_collection' == $route || 'api_activeTypes_put_item' == $route):
+            foreach ($content as $key => $field):
+                if ($key == 'name') {
+                    $type->setName($field);
                 }
-            } elseif ($key == 'customAttributes') {
-                foreach ($field as $item) {
-                    $attributeVal = null;
-                    if (property_exists($item, 'id')) {
-                        $attributeVal = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeTypeCustoms" => $type]);
-                    }
-                    if(empty($attributeVal)){
-                        $attributeVal = new AttributeValue();
-                    }
-                    $attributeVal->setName($item->name);
-                    $attributeVal->setValue($item->value);
-                    if (property_exists($item, "unit") && !empty($item->unit)) {
-                        $unit = null;
-                        if (property_exists($item->unit, "id")) {
-                            $unit = $this->unitRepository->find($item->unit->id);
+                if ($key == 'basicAttributes') {
+                    foreach ($field as $item) {
+                        $attributeVal = null;
+                        if (property_exists($item, 'id')) {
+                            $attributeVal = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeTypeBasics" => $type]);
                         }
-                        if (empty($unit)){
-                            $unit = new Unit();
+                        if (empty($attributeVal)) {
+                            $attributeVal = new AttributeValue();
                         }
-                        $unit->setName($item->unit->name);
-                        if (property_exists($item->unit, "readOnly")) {
-                            $unit->setReadOnly($item->unit->readOnly);
-                        } else {
-                            $unit->setReadOnly(false);
+                        $attributeVal->setName($item->name);
+                        $attributeVal->setValue($item->value);
+                        if (property_exists($item, "unit") && !empty($item->unit)) {
+                            $unit = null;
+                            if (property_exists($item->unit, "id")) {
+                                $unit = $this->unitRepository->find($item->unit->id);
+                            }
+                            if (empty($unit)) {
+                                $unit = new Unit();
+                            }
+                            $unit->setName($item->unit->name);
+                            if (property_exists($item->unit, "readOnly")) {
+                                $unit->setReadOnly($item->unit->readOnly);
+                            } else {
+                                $unit->setReadOnly(false);
+                            }
+                            $this->entityManager->persist($unit);
+                            $attributeVal->setUnit($unit);
                         }
-                        $this->entityManager->persist($unit);
-                        $attributeVal->setUnit($unit);
+                        $this->entityManager->persist($attributeVal);
+                        $type->addBasicAttributes($attributeVal);
+                        $this->entityManager->persist($type);
                     }
-                    $this->entityManager->persist($attributeVal);
-                    $type->addCustomAttributes($attributeVal);
-                    $this->entityManager->persist($type);
+                } elseif ($key == 'customAttributes') {
+                    foreach ($field as $item) {
+                        $attributeVal = null;
+                        if (property_exists($item, 'id')) {
+                            $attributeVal = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeTypeCustoms" => $type]);
+                        }
+                        if (empty($attributeVal)) {
+                            $attributeVal = new AttributeValue();
+                        }
+                        $attributeVal->setName($item->name);
+                        $attributeVal->setValue($item->value);
+                        if (property_exists($item, "unit") && !empty($item->unit)) {
+                            $unit = null;
+                            if (property_exists($item->unit, "id")) {
+                                $unit = $this->unitRepository->find($item->unit->id);
+                            }
+                            if (empty($unit)) {
+                                $unit = new Unit();
+                            }
+                            $unit->setName($item->unit->name);
+                            if (property_exists($item->unit, "readOnly")) {
+                                $unit->setReadOnly($item->unit->readOnly);
+                            } else {
+                                $unit->setReadOnly(false);
+                            }
+                            $this->entityManager->persist($unit);
+                            $attributeVal->setUnit($unit);
+                        }
+                        $this->entityManager->persist($attributeVal);
+                        $type->addCustomAttributes($attributeVal);
+                        $this->entityManager->persist($type);
+                    }
                 }
-            }
-        endforeach;
+            endforeach;
+        endif;
         $this->entityManager->flush();
     }
 
