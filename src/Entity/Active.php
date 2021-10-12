@@ -196,7 +196,12 @@ class Active
 
     public function addBasicAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->basicAttributes->contains($attributeValue)) {
+        if (!empty($this->basicAttributes)) {
+            if (!$this->basicAttributes->contains($attributeValue)) {
+                $this->basicAttributes[] = $attributeValue;
+                $attributeValue->setActiveBasics($this);
+            }
+        } else {
             $this->basicAttributes[] = $attributeValue;
             $attributeValue->setActiveBasics($this);
         }
@@ -226,7 +231,12 @@ class Active
 
     public function addCustomAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->customAttributes->contains($attributeValue)) {
+        if (!empty($this->customAttributes)) {
+            if (!$this->customAttributes->contains($attributeValue)) {
+                $this->customAttributes[] = $attributeValue;
+                $attributeValue->setActiveCustoms($this);
+            }
+        }else{
             $this->customAttributes[] = $attributeValue;
             $attributeValue->setActiveCustoms($this);
         }
@@ -246,7 +256,8 @@ class Active
         return $this;
     }
 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
 }

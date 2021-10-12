@@ -139,7 +139,12 @@ class ActiveType
 
     public function addBasicAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->basicAttributes->contains($attributeValue)) {
+        if (!empty($this->basicAttributes)) {
+            if (!$this->basicAttributes->contains($attributeValue)) {
+                $this->basicAttributes[] = $attributeValue;
+                $attributeValue->setActiveTypeBasics($this);
+            }
+        }else{
             $this->basicAttributes[] = $attributeValue;
             $attributeValue->setActiveTypeBasics($this);
         }
@@ -169,7 +174,12 @@ class ActiveType
 
     public function addCustomAttributes(AttributeValue $attributeValue): self
     {
-        if (!$this->customAttributes->contains($attributeValue)) {
+        if (!empty($this->customAttributes)) {
+            if (!$this->customAttributes->contains($attributeValue)) {
+                $this->customAttributes[] = $attributeValue;
+                $attributeValue->setActiveTypeCustoms($this);
+            }
+        }else{
             $this->customAttributes[] = $attributeValue;
             $attributeValue->setActiveTypeCustoms($this);
         }

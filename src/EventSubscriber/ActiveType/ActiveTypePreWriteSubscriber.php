@@ -54,7 +54,7 @@ class ActiveTypePreWriteSubscriber implements EventSubscriberInterface
         if (!($type instanceof ActiveType)) {
             return;
         }
-        if ('api_activeTypes_post_collection' == $route || 'api_activeTypes_put_item' == $route):
+        if ('api_active_types_post_collection' == $route || 'api_active_types_put_item' == $route):
             foreach ($content as $key => $field):
                 if ($key == 'name') {
                     $type->setName($field);
