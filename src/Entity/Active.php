@@ -197,7 +197,7 @@ class Active
     public function addBasicAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->basicAttributes)) {
-            if (!$this->basicAttributes->contains($attributeValue)) {
+            if (!in_array($attributeValue, $this->basicAttributes)) {
                 $this->basicAttributes[] = $attributeValue;
                 $attributeValue->setActiveBasics($this);
             }
@@ -232,7 +232,7 @@ class Active
     public function addCustomAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->customAttributes)) {
-            if (!$this->customAttributes->contains($attributeValue)) {
+            if (!in_array($attributeValue, $this->customAttributes)) {
                 $this->customAttributes[] = $attributeValue;
                 $attributeValue->setActiveCustoms($this);
             }
