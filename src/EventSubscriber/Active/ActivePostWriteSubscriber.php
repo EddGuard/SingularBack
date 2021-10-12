@@ -57,34 +57,6 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $this->entityManager->getConnection()->beginTransaction();
             try {
-                //Seteo de attribute values definidos por defecto en el type al activo
-                $type = $active->getActiveType();
-
-                foreach ($type->getBasicAttributes() as $basicAttribute):
-                    $attributeValue = new AttributeValue();
-                    $attributeValue->setName($basicAttribute->getName());
-                    $attributeValue->setValue($basicAttribute->getValue());
-                    if (!empty($basicAttribute->getUnit())) {
-                        $attributeValue->setUnit($basicAttribute->getUnit());
-                    }
-                    $this->entityManager->persist($attributeValue);
-                    $active->addBasicAttributes($attributeValue);
-                    $this->entityManager->persist($active);
-                endforeach;
-                foreach ($type->getCustomAttributes() as $customAttribute):
-                    $attributeValue = new AttributeValue();
-                    $attributeValue->setName($customAttribute->getName());
-                    $attributeValue->setValue($customAttribute->getValue());
-                    if (!empty($customAttribute->getUnit())) {
-                        $attributeValue->setUnit($customAttribute->getUnit());
-                    }
-                    $this->entityManager->persist($attributeValue);
-                    $active->addCustomAttributes($attributeValue);
-                    $this->entityManager->persist($active);
-                endforeach;
-
-                $this->entityManager->flush();
-
 
                 //Creación de primera entrada en el registro del activo
 
