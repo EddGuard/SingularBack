@@ -5,7 +5,10 @@ namespace App\EventSubscriber\Active;
 use App\Entity\Active;
 use App\Entity\ActiveRecord;
 use App\Entity\AttributeValue;
+use App\Entity\Unit;
 use App\Exception\GeneralException;
+use App\Repository\AttributeValueRepository;
+use App\Repository\UnitRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -15,12 +18,23 @@ use Doctrine\ORM\EntityManagerInterface;
 class ActivePostWriteSubscriber implements EventSubscriberInterface
 {
     private $entityManager;
+    /**
+     * @var AttributeValueRepository
+     */
+    private AttributeValueRepository $attributeValueRepository;
+    /**
+     * @var UnitRepository
+     */
+    private UnitRepository $unitRepository;
 
     public function __construct(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        AttributeValueRepository $attributeValueRepository, UnitRepository $unitRepository
     )
     {
         $this->entityManager = $entityManager;
+        $this->attributeValueRepository = $attributeValueRepository;
+        $this->unitRepository = $unitRepository;
     }
 
     /**
@@ -33,6 +47,8 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
         $active = $event->getControllerResult();
         $request = $event->getRequest();
         $route = $request->attributes->get('_route');
+        $content = json_decode($request->getContent());
+
 
         if (!($active instanceof Active)) {
             return;
@@ -48,7 +64,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     $attributeValue = new AttributeValue();
                     $attributeValue->setName($basicAttribute->getName());
                     $attributeValue->setValue($basicAttribute->getValue());
-                    if (!empty($basicAttribute->getUnit())){
+                    if (!empty($basicAttribute->getUnit())) {
                         $attributeValue->setUnit($basicAttribute->getUnit());
                     }
                     $this->entityManager->persist($attributeValue);
@@ -59,13 +75,83 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     $attributeValue = new AttributeValue();
                     $attributeValue->setName($customAttribute->getName());
                     $attributeValue->setValue($customAttribute->getValue());
-                    if (!empty($customAttribute->getUnit())){
+                    if (!empty($customAttribute->getUnit())) {
                         $attributeValue->setUnit($customAttribute->getUnit());
                     }
                     $this->entityManager->persist($attributeValue);
                     $active->addCustomAttributes($attributeValue);
                     $this->entityManager->persist($active);
                 endforeach;
+
+                foreach ($content as $key => $items):
+                    if ($key == 'basicAttributes'):
+                        foreach ($items as $item):
+                            if (property_exists($item, 'id')):
+                                $existingAttribute = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeBasics" => $active]);
+                            endif;
+                            if (!empty($existingAttribute)):
+                                $existingAttribute->setName($item->name);
+                                $existingAttribute->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $existingAttribute->getUnit()->setName($item->unit->name);
+                                endif;
+                                $active->addBasicAttributes($existingAttribute);
+                                $this->entityManager->persist($active);
+                                $existingAttribute = null;
+                            else:
+                                $attributeVal = new AttributeValue();
+                                $attributeVal->setName($item->name);
+                                $attributeVal->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $unit = new Unit();
+                                    $unit->setName($item->unit->name);
+                                    if (property_exists($item->unit, 'readOnly')):
+                                        $unit->setReadOnly($item->unit->readOnly);
+                                    else:
+                                        $unit->setReadOnly(false);
+                                    endif;
+                                    $this->entityManager->persist($unit);
+                                    $attributeVal->setUnit($unit);
+                                endif;
+                                $this->entityManager->persist($attributeVal);
+                                $active->addBasicAttributes($attributeVal);
+                            endif;
+                        endforeach;
+                    elseif ($key == 'customAttributes'):
+                        foreach ($items as $item):
+                            if (property_exists($item, 'id')):
+                                $existingAttribute = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeCustoms" => $active]);
+                            endif;
+                            if (!empty($existingAttribute)):
+                                $existingAttribute->setName($item->name);
+                                $existingAttribute->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $existingAttribute->getUnit()->setName($item->unit->name);
+                                endif;
+                                $active->addCustomAttributes($existingAttribute);
+                                $this->entityManager->persist($active);
+                                $existingAttribute = null;
+                            else:
+                                $attributeVal = new AttributeValue();
+                                $attributeVal->setName($item->name);
+                                $attributeVal->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $unit = new Unit();
+                                    $unit->setName($item->unit->name);
+                                    if (property_exists($item->unit, 'readOnly')):
+                                        $unit->setReadOnly($item->unit->readOnly);
+                                    else:
+                                        $unit->setReadOnly(false);
+                                    endif;
+                                    $this->entityManager->persist($unit);
+                                    $attributeVal->setUnit($unit);
+                                endif;
+                                $this->entityManager->persist($attributeVal);
+                                $active->addCustomAttributes($attributeVal);
+                            endif;
+                        endforeach;
+                    endif;
+                endforeach;;
                 $this->entityManager->flush();
 
 
@@ -81,25 +167,25 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $activeObject = $record->getActiveObject();
 
                 $basicAttributes = [];
-                foreach ($active->getBasicAttributes() as $key=>$attributeValue){
+                foreach ($active->getBasicAttributes() as $key => $attributeValue) {
                     $basicAttributes[$key]["name"] = $attributeValue->getName();
                     $basicAttributes[$key]["value"] = $attributeValue->getValue();
-                    if (!empty($attributeValue->getUnit())){
+                    if (!empty($attributeValue->getUnit())) {
                         $basicAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
                         $basicAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
-                    }else{
+                    } else {
                         $basicAttributes[$key]["unit"] = null;
                     }
                 }
 
                 $customAttributes = [];
-                foreach ($active->getCustomAttributes() as $key=>$attributeValue){
+                foreach ($active->getCustomAttributes() as $key => $attributeValue) {
                     $customAttributes[$key]["name"] = $attributeValue->getName();
                     $customAttributes[$key]["value"] = $attributeValue->getValue();
-                    if (!empty($attributeValue->getUnit())){
+                    if (!empty($attributeValue->getUnit())) {
                         $customAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
                         $customAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
-                    }else{
+                    } else {
                         $customAttributes[$key]["unit"] = null;
                     }
                 }
@@ -135,6 +221,76 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
         elseif ('api_actives_put_item' == $route) {
             $this->entityManager->getConnection()->beginTransaction();
 
+            foreach ($content as $key => $items):
+                if ($key == 'basicAttributes'):
+                    foreach ($items as $item):
+                        if (property_exists($item, 'id')):
+                            $existingAttribute = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeBasics" => $active]);
+                        endif;
+                        if (!empty($existingAttribute)):
+                            $existingAttribute->setName($item->name);
+                                $existingAttribute->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $existingAttribute->getUnit()->setName($item->unit->name);
+                                endif;
+                            $active->addBasicAttributes($existingAttribute);
+                            $this->entityManager->persist($active);
+                            $existingAttribute = null;
+                        else:
+                            $attributeVal = new AttributeValue();
+                            $attributeVal->setName($item->name);
+                            $attributeVal->setValue($item->value);
+                            if (property_exists($item, 'unit')):
+                                $unit = new Unit();
+                                $unit->setName($item->unit->name);
+                                if (property_exists($item->unit, 'readOnly')):
+                                    $unit->setReadOnly($item->unit->readOnly);
+                                else:
+                                    $unit->setReadOnly(false);
+                                endif;
+                                $this->entityManager->persist($unit);
+                                $attributeVal->setUnit($unit);
+                            endif;
+                            $this->entityManager->persist($attributeVal);
+                            $active->addBasicAttributes($attributeVal);
+                        endif;
+                    endforeach;
+                elseif ($key == 'customAttributes'):
+                    foreach ($items as $item):
+                        if (property_exists($item, 'id')):
+                            $existingAttribute = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeCustoms" => $active]);
+                        endif;
+                        if (!empty($existingAttribute)):
+                            $existingAttribute->setName($item->name);
+                                $existingAttribute->setValue($item->value);
+                                if (property_exists($item, 'unit')):
+                                    $existingAttribute->getUnit()->setName($item->unit->name);
+                                endif;
+                            $active->addCustomAttributes($existingAttribute);
+                            $this->entityManager->persist($active);
+                            $existingAttribute = null;
+                        else:
+                            $attributeVal = new AttributeValue();
+                            $attributeVal->setName($item->name);
+                            $attributeVal->setValue($item->value);
+                            if (property_exists($item, 'unit')):
+                                $unit = new Unit();
+                                $unit->setName($item->unit->name);
+                                if (property_exists($item->unit, 'readOnly')):
+                                    $unit->setReadOnly($item->unit->readOnly);
+                                else:
+                                    $unit->setReadOnly(false);
+                                endif;
+                                $this->entityManager->persist($unit);
+                                $attributeVal->setUnit($unit);
+                            endif;
+                            $this->entityManager->persist($attributeVal);
+                            $active->addCustomAttributes($attributeVal);
+                        endif;
+                    endforeach;
+                endif;
+            endforeach;
+
             $record = $active->getActiveRecord() ? $active->getActiveRecord() : new ActiveRecord();
             $record->setActive($active);
 
@@ -145,25 +301,25 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $activeObject = $record->getActiveObject();
 
             $basicAttributes = [];
-            foreach ($active->getBasicAttributes() as $key=>$attributeValue){
+            foreach ($active->getBasicAttributes() as $key => $attributeValue) {
                 $basicAttributes[$key]["name"] = $attributeValue->getName();
                 $basicAttributes[$key]["value"] = $attributeValue->getValue();
-                if (!empty($attributeValue->getUnit())){
+                if (!empty($attributeValue->getUnit())) {
                     $basicAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
                     $basicAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
-                }else{
+                } else {
                     $basicAttributes[$key]["unit"] = null;
                 }
             }
 
             $customAttributes = [];
-            foreach ($active->getCustomAttributes() as $key=>$attributeValue){
+            foreach ($active->getCustomAttributes() as $key => $attributeValue) {
                 $customAttributes[$key]["name"] = $attributeValue->getName();
                 $customAttributes[$key]["value"] = $attributeValue->getValue();
-                if (!empty($attributeValue->getUnit())){
+                if (!empty($attributeValue->getUnit())) {
                     $customAttributes[$key]["unit"]["id"] = $attributeValue->getUnit()->getId();
                     $customAttributes[$key]["unit"]["name"] = $attributeValue->getUnit()->getName();
-                }else{
+                } else {
                     $customAttributes[$key]["unit"] = null;
                 }
             }

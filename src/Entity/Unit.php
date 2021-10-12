@@ -61,7 +61,11 @@ class Unit
     /**
      * @ORM\Column(type="boolean")
      * @Groups({
-     *     "unit", "attributeValue", "activeType", "active", "basicAttribute", "customAttribute"
+     *     "unit", "attributeValue", "activeType", "active", "basicAttribute", "customAttribute",
+     *     "unit.write", "attributeValue.write", "active.write", "activeType.write",
+     *     "basicAttribute.write", "customAttribute.write",
+     *     "unit.update", "attributeValue.update", "active.update", "activeType.update",
+     *     "basicAttribute.update", "customAttribute.update"
      * })
      */
     private $readOnly;

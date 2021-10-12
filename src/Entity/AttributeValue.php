@@ -82,7 +82,7 @@ class AttributeValue
     private $activeTypeCustoms;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="attributeValues")
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="attributeValues", cascade={"persist"})
      * @Groups({
      *     "attributeValue", "activeType", "active", "attributeValue.write", "attributeValue.update",
      *     "activeType.write", "active.write", "activeType.update", "active.update"
