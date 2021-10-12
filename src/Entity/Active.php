@@ -197,7 +197,12 @@ class Active
     public function addBasicAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->basicAttributes)) {
-            if (!in_array($attributeValue, $this->basicAttributes)) {
+            if (is_array($this->basicAttributes)){
+                $alreadyExist = in_array($attributeValue, $this->basicAttributes);
+            }else{
+                $alreadyExist = $this->basicAttributes->contains($attributeValue);
+            }
+            if (!$alreadyExist) {
                 $this->basicAttributes[] = $attributeValue;
                 $attributeValue->setActiveBasics($this);
             }
@@ -232,7 +237,12 @@ class Active
     public function addCustomAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->customAttributes)) {
-            if (!in_array($attributeValue, $this->customAttributes)) {
+            if (is_array($this->basicAttributes)){
+                $alreadyExist = in_array($attributeValue, $this->customAttributes);
+            }else{
+                $alreadyExist = $this->customAttributes->contains($attributeValue);
+            }
+            if (!$alreadyExist) {
                 $this->customAttributes[] = $attributeValue;
                 $attributeValue->setActiveCustoms($this);
             }
