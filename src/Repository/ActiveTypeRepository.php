@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ActiveType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,25 @@ class ActiveTypeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ActiveType::class);
+    }
+
+    public function getActivesCountByTypeId(int $id){
+        {
+            $sql = "SELECT count(a.id) 
+FROM active_type t 
+LEFT JOIN active a on t.id = a.active_type_id 
+WHERE t.id = :id;";
+            $em = $this->getEntityManager();
+            try {
+                $statement = $em->getConnection()->prepare($sql);
+                $statement->bindParam('id', $id);
+                $statement->execute();
+                return $statement->fetchOne();
+            } catch (Exception $e) {
+            } catch (\Doctrine\DBAL\Exception $e) {
+            }
+            return 0;
+        }
     }
 
     // /**
