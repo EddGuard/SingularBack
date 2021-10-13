@@ -20,8 +20,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *          "post"={
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *              "validation_groups"={"Default", "Create"},
- *              "denormalization_context"={"groups"={"activeType.write"}},
- *              "validate"=false
+ *              "denormalization_context"={"groups"={"activeType.write"}}
  *          },
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
@@ -29,8 +28,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"activeType.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
- *              "validate"=false
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          },
  *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      })
@@ -64,15 +62,14 @@ class ActiveType
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Active::class, mappedBy="activeType")
+     * @ORM\OneToMany(targetEntity=Active::class, mappedBy="activeType", cascade={"remove"})
      */
     private $actives;
 
     /**
      * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeTypeBasics", cascade={"remove"})
      * @Groups({
-     *     "activeType", "activeType.write",
-     *     "activeType.update", "active"
+     *     "activeType", "active"
      * })
      */
     private $basicAttributes;
@@ -80,8 +77,7 @@ class ActiveType
     /**
      * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeTypeCustoms", cascade={"remove"})
      * @Groups({
-     *     "activeType", "activeType.write",
-     *     "activeType.update", "active"
+     *     "activeType", "active"
      * })
      */
     private $customAttributes;
@@ -211,10 +207,12 @@ class ActiveType
     }
 
     public function removeAllCustomAttributes(){
-        foreach ($this->customAttributes as $customAttribute){
-            $customAttribute->setActiveTypeCustoms(null);
+        if (!empty($this->customAttributes)) {
+            foreach ($this->customAttributes as $customAttribute) {
+                $customAttribute->setActiveTypeCustoms(null);
+            }
+            $this->customAttributes = new ArrayCollection();
         }
-        $this->customAttributes = new ArrayCollection();
         return $this;
     }
 }

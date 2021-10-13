@@ -36,7 +36,7 @@ class AttributeValue
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "attributeValue", "activeType", "active", "unit", "active.write", "active.update", "activeType.write", "activeType.update"
+     *     "attributeValue", "activeType", "active", "unit"
      * })
      */
     private $id;

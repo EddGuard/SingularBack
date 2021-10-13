@@ -27,8 +27,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "post"={
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *              "validation_groups"={"Default", "Create"},
- *              "denormalization_context"={"groups"={"active.write"}},
- *              "validate"=false
+ *              "denormalization_context"={"groups"={"active.write"}}
+ *
  *          },
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
@@ -36,8 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"active.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
- *              "validate"=false
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          },
  *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      })
@@ -60,7 +59,7 @@ class Active
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "active", "activeType", "activeRecord"
+     *     "active", "activeType", "activeRecord", "active.update"
      * })
      */
     private $id;
@@ -111,7 +110,7 @@ class Active
     /**
      * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeBasics", cascade={"remove"})
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active"
      * })
      */
     private $basicAttributes;
@@ -119,7 +118,7 @@ class Active
     /**
      * @ORM\OneToMany(targetEntity=AttributeValue::class, mappedBy="activeCustoms", cascade={"remove"})
      * @Groups({
-     *     "active", "active.write", "active.update"
+     *     "active"
      * })
      */
     private $customAttributes;
@@ -275,10 +274,12 @@ class Active
 
     public function removeAllCustomAttributes()
     {
-        foreach ($this->customAttributes as $customAttribute) {
-            $customAttribute->setActiveCustoms(null);
+        if (!empty($this->customAttributes)) {
+            foreach ($this->customAttributes as $customAttribute) {
+                $customAttribute->setActiveCustoms(null);
+            }
+            $this->customAttributes = new ArrayCollection();
         }
-        $this->customAttributes = new ArrayCollection();
         return $this;
     }
 }
