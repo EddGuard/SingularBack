@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ActiveTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ApiResource(attributes={
@@ -30,6 +33,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      })
  * @ORM\Entity(repositoryClass=activeTypeRepository::class)
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "name": "ipartial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={
+ *     "id"
+ * }, arguments={"orderParameterName"="order"})
  */
 class ActiveType
 {

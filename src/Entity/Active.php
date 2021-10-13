@@ -43,12 +43,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity(fields={"reference"}, ignoreNull=false)
  * @ApiFilter(SearchFilter::class, properties={
  *     "reference": "iexact",
- *     "type": "iexact"
+ *     "activeType.name": "ipartial"
  * })
  * @ApiFilter(DateFilter::class, properties={"entryDate"})
  * @ApiFilter(OrderFilter::class, properties={
  *     "entryDate",
- *     "type"
+ *     "activeType.name"
  * }, arguments={"orderParameterName"="order"})
  */
 class Active
