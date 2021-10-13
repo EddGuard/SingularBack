@@ -20,7 +20,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *          "post"={
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *              "validation_groups"={"Default", "Create"},
- *              "denormalization_context"={"groups"={"activeType.write"}}
+ *              "denormalization_context"={"groups"={"activeType.write"}},
+ *              "validate"=false
  *          },
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
@@ -28,7 +29,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"activeType.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "validate"=false
  *          },
  *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      })

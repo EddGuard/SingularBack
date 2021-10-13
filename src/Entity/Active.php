@@ -27,7 +27,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "post"={
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *              "validation_groups"={"Default", "Create"},
- *              "denormalization_context"={"groups"={"active.write"}}
+ *              "denormalization_context"={"groups"={"active.write"}},
+ *              "validate"=false
  *          },
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
@@ -35,7 +36,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *          "put"={
  *              "denormalization_context"={"groups"={"active.update"}},
- *              "security"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "validate"=false
  *          },
  *          "delete"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      })
@@ -197,9 +199,9 @@ class Active
     public function addBasicAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->basicAttributes)) {
-            if (is_array($this->basicAttributes)){
+            if (is_array($this->basicAttributes)) {
                 $alreadyExist = in_array($attributeValue, $this->basicAttributes);
-            }else{
+            } else {
                 $alreadyExist = $this->basicAttributes->contains($attributeValue);
             }
             if (!$alreadyExist) {
@@ -237,16 +239,16 @@ class Active
     public function addCustomAttributes(AttributeValue $attributeValue): self
     {
         if (!empty($this->customAttributes)) {
-            if (is_array($this->basicAttributes)){
+            if (is_array($this->basicAttributes)) {
                 $alreadyExist = in_array($attributeValue, $this->customAttributes);
-            }else{
+            } else {
                 $alreadyExist = $this->customAttributes->contains($attributeValue);
             }
             if (!$alreadyExist) {
                 $this->customAttributes[] = $attributeValue;
                 $attributeValue->setActiveCustoms($this);
             }
-        }else{
+        } else {
             $this->customAttributes[] = $attributeValue;
             $attributeValue->setActiveCustoms($this);
         }
@@ -271,8 +273,9 @@ class Active
         return $this->file;
     }
 
-    public function removeAllCustomAttributes(){
-        foreach ($this->customAttributes as $customAttribute){
+    public function removeAllCustomAttributes()
+    {
+        foreach ($this->customAttributes as $customAttribute) {
             $customAttribute->setActiveCustoms(null);
         }
         $this->customAttributes = new ArrayCollection();
