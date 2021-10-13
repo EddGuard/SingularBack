@@ -270,4 +270,12 @@ class Active
     {
         return $this->file;
     }
+
+    public function removeAllCustomAttributes(){
+        foreach ($this->customAttributes as $customAttribute){
+            $customAttribute->setActiveCustoms(null);
+        }
+        $this->customAttributes = new ArrayCollection();
+        return $this;
+    }
 }

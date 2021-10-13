@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AttributeValue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,23 @@ class AttributeValueRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AttributeValue::class);
+    }
+
+    public function deleteOrphanedAttributes()
+    {
+        $sql = "DELETE FROM attribute_value av WHERE av.active_basics_id IS NULL
+                                 AND av.active_customs_id IS NULL
+                                 AND av.active_type_basics_id IS NULL
+                                 AND av.active_type_customs_id IS NULL;";
+        $em = $this->getEntityManager();
+        try {
+            $statement = $em->getConnection()->prepare($sql);
+            $statement->execute();
+            return $statement->fetchAll();
+        } catch (Exception $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
+        }
+        return 0;
     }
 
     // /**

@@ -87,11 +87,13 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
                         $this->entityManager->persist($attributeVal);
                         $active->addBasicAttributes($attributeVal);
                     }
-                } elseif ($key == 'customAttributes') {
+                }
+                elseif ($key == 'customAttributes') {
+                    $active->removeAllCustomAttributes();
                     foreach ($items as $item):
                         $attributeVal = null;
                         if (property_exists($item, 'id')) {
-                            $attributeVal = $this->attributeValueRepository->findOneBy(["id" => $item->id, "activeCustoms" => $active]);
+                            $attributeVal = $this->attributeValueRepository->find($item->id);
                         }
                         if (empty($attributeVal)) {
                             $attributeVal = new AttributeValue();
@@ -123,6 +125,7 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
         endif;
 
         $this->entityManager->flush();
+        $this->attributeValueRepository->deleteOrphanedAttributes();
     }
 
     public static function getSubscribedEvents()

@@ -198,4 +198,12 @@ class ActiveType
 
         return $this;
     }
+
+    public function removeAllCustomAttributes(){
+        foreach ($this->customAttributes as $customAttribute){
+            $customAttribute->setActiveTypeCustoms(null);
+        }
+        $this->customAttributes = new ArrayCollection();
+        return $this;
+    }
 }
