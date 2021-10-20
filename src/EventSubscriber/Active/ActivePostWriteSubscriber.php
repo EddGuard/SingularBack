@@ -14,6 +14,10 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+
+
 
 class ActivePostWriteSubscriber implements EventSubscriberInterface
 {
@@ -26,15 +30,27 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
      * @var UnitRepository
      */
     private UnitRepository $unitRepository;
+    /**
+     * @var TokenStorageInterface
+     */
+    private TokenStorageInterface $tokenStorage;
+    /**
+     * @var SerializerInterface
+     */
+    private SerializerInterface $serializer;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        AttributeValueRepository $attributeValueRepository, UnitRepository $unitRepository
+        AttributeValueRepository $attributeValueRepository, UnitRepository $unitRepository,
+        TokenStorageInterface $tokenStorage,
+        SerializerInterface $serializer
     )
     {
         $this->entityManager = $entityManager;
         $this->attributeValueRepository = $attributeValueRepository;
         $this->unitRepository = $unitRepository;
+        $this->tokenStorage = $tokenStorage;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -48,6 +64,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $route = $request->attributes->get('_route');
         $content = json_decode($request->getContent());
+        $user = $this->tokenStorage->getToken()->getUser();
 
 
         if (!($active instanceof Active)) {
@@ -98,9 +115,12 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 $activeToSave = new \stdClass();
                 $activeToSave->reference = $active->getReference();
-                $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
+                $today = new \DateTime();
+                $activeToSave->entry_date = $today->format("d/m/Y H:i:s");
                 $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
                 $activeToSave->type = $type;
+                $activeToSave->description = $content->description;
+                $activeToSave->user = json_decode($this->serializer->serialize($user, 'json'));
                 $activeToSave->basic_attributes = $basicAttributes;
                 $activeToSave->custom_attributes = $customAttributes;
 
@@ -120,8 +140,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 throw new GeneralException($exception->getMessage());
             }
-        }
-        elseif ('api_actives_put_item' == $route) {
+        } elseif ('api_actives_put_item' == $route) {
             $this->entityManager->getConnection()->beginTransaction();
 
             $record = $active->getActiveRecord() ? $active->getActiveRecord() : new ActiveRecord();
@@ -162,9 +181,13 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $activeToSave = new \stdClass();
             $activeToSave->reference = $active->getReference();
-            $activeToSave->entry_date = $active->getEntryDate()->format("d/m/Y H:i:s");
+            $today = new \DateTime();
+            $activeToSave->entry_date = $today->format("d/m/Y H:i:s");
+
             $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
             $activeToSave->type = $type;
+            $activeToSave->description = $content->description;
+            $activeToSave->user = json_decode($this->serializer->serialize($user, 'json'));
             $activeToSave->basic_attributes = $basicAttributes;
             $activeToSave->custom_attributes = $customAttributes;
 

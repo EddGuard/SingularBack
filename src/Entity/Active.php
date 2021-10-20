@@ -43,7 +43,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=ActiveRepository::class)
  * @UniqueEntity(fields={"reference"}, ignoreNull=false)
  * @ApiFilter(SearchFilter::class, properties={
- *     "reference": "iexact",
+ *     "reference": "ipartial",
  *     "activeType.name": "ipartial"
  * })
  * @ApiFilter(DateFilter::class, properties={"entryDate"})
@@ -71,6 +71,14 @@ class Active
      * })
      */
     private $reference;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "active", "active.write", "active.update", "activeType", "activeRecord"
+     * })
+     */
+    private $description = "";
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -123,6 +131,16 @@ class Active
      */
     private $customAttributes;
 
+    /**
+     * @var User $createdBy
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * @Groups({"task", "request", "workOrder", "scheduledTask", "record.read"})
+     */
+    protected $createdBy;
+
     public function __construct()
     {
         $this->attributeValues = new ArrayCollection();
@@ -143,6 +161,11 @@ class Active
         $this->reference = $reference;
 
         return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     public function getEntryDate(): ?\DateTimeInterface
@@ -280,6 +303,24 @@ class Active
             }
             $this->customAttributes = new ArrayCollection();
         }
+        return $this;
+    }
+
+
+    /**
+     * Returns createdBy.
+     *
+     * @return User
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
         return $this;
     }
 }
