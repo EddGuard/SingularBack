@@ -103,7 +103,7 @@ class User implements UserInterface, EncoderAwareInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "user", "user.write", "user.update"
+     *     "user", "user.write", "user.update", "active", "activeType", "activeRecord"
      * })
      */
     private $name;
@@ -111,7 +111,7 @@ class User implements UserInterface, EncoderAwareInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "user", "user.write", "user.update"
+     *     "user", "user.write", "user.update", "active", "activeType", "activeRecord"
      * })
      */
     private $lastName;
@@ -120,7 +120,7 @@ class User implements UserInterface, EncoderAwareInterface
      * @ORM\ManyToMany(targetEntity="App\Entity\Roles", mappedBy="users", cascade={"persist"})
      * @ApiSubresource(maxDepth=1)
      * @Groups({
-     *     "user.write", "user.update"
+     *     "user.write", "user.update", "active", "activeType", "activeRecord"
      * })
      */
     private $groups;
@@ -187,7 +187,7 @@ class User implements UserInterface, EncoderAwareInterface
      * @ORM\ManyToOne(targetEntity=MediaObject::class)
      * @ORM\JoinColumn(nullable=true)
      * @ApiProperty(iri="http://schema.org/image")
-     * @Groups({"user", "user.write", "user.update"})
+     * @Groups({"user", "user.write", "user.update", "active", "activeType", "activeRecord"})
      */
     public $image;
 
