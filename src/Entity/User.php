@@ -80,7 +80,7 @@ class User implements UserInterface, EncoderAwareInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "user"
+     *     "user", "active", "activeType", "activeRecord"
      * })
      */
     private $id;
@@ -89,7 +89,7 @@ class User implements UserInterface, EncoderAwareInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email()
      * @Groups({
-     *     "user", "user.write", "user.update"
+     *     "user", "user.write", "user.update", "active", "activeType", "activeRecord"
      * })
      */
     private $username;

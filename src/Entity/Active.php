@@ -137,7 +137,7 @@ class Active
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
-     * @Groups({"task", "request", "workOrder", "scheduledTask", "record.read"})
+     * @Groups({ "active", "activeType", "activeRecord"})
      */
     protected $createdBy;
 
