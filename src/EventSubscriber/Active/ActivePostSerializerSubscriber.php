@@ -43,7 +43,8 @@ class ActivePostSerializerSubscriber implements EventSubscriberInterface
             return;
 
         if ('api_actives_get_collection' === $route ) {
-            $content = json_decode($event->getControllerResult());
+            $content = [];
+            $content['actives'] = json_decode($event->getControllerResult(), true);
             $content['page'] = $request->attributes->get('data')->getCurrentPage();
             $content['itemsPerPage'] = $request->attributes->get('data')->getItemsPerPage();
             $content['count'] = $request->attributes->get('data')->count();
