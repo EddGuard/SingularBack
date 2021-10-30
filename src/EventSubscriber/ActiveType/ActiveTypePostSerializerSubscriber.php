@@ -61,9 +61,13 @@ class ActiveTypePostSerializerSubscriber implements EventSubscriberInterface
             foreach ($typeResult as &$type) {
                 $type["activesCount"] = $this->activeTypeRepository->getActivesCountByTypeId($type["id"]);
             }
+            $typeResult['page'] = $request->attributes->get('data')->getCurrentPage();
+            $typeResult['itemsPerPage'] = $request->attributes->get('data')->getItemsPerPage();
+            $typeResult['count'] = $request->attributes->get('data')->count();
         } else {
             $typeResult["activesCount"] = $this->activeTypeRepository->getActivesCountByTypeId($typeResult["id"]);;
         }
+
         $typeResult = json_encode($typeResult);
         $event->setControllerResult($typeResult);
     }
