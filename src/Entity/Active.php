@@ -73,12 +73,12 @@ class Active
     private $reference;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true, options={"default" = ""})
      * @Groups({
      *     "active", "active.write", "active.update", "activeType", "activeRecord"
      * })
      */
-    private $description = "";
+    private $description;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -159,6 +159,13 @@ class Active
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
+
+        return $this;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
