@@ -110,8 +110,8 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                     }
                 }
                 $type = [];
-                $type["id"] = $active->getActiveType()->getId();
-                $type["name"] = $active->getActiveType()->getName();
+                $type["id"] = $active->getActiveType() ? $active->getActiveType()->getId() : null;
+                $type["name"] = $active->getActiveType() ? $active->getActiveType()->getName() : null;
 
                 $activeToSave = new \stdClass();
                 $activeToSave->reference = $active->getReference();
