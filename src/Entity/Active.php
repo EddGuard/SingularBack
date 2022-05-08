@@ -17,6 +17,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 
 /**
@@ -138,8 +139,32 @@ class Active
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * @Groups({ "active", "activeType", "activeRecord"})
+     * @MaxDepth(1)
      */
     protected $createdBy;
+
+    /**
+     * @Gedmo\Blameable(on="update")
+     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @MaxDepth(1)
+     */
+    private $updatedBy;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
 
     public function __construct()
     {
@@ -327,6 +352,42 @@ class Active
     public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getUpdatedBy(): ?User
+    {
+        return $this->updatedBy;
+    }
+
+    public function setUpdatedBy(?User $updatedBy): self
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
