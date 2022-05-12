@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ActiveRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Filter\ActiveRecord\ArrayDateFilter;
 
 /**
  * @ApiResource(attributes={
@@ -18,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"}
  *      })
  * @ORM\Entity(repositoryClass=ActiveRecordRepository::class)
+ * @ApiFilter(ArrayDateFilter::class, properties={"dateRecord"})
  */
 class ActiveRecord
 {

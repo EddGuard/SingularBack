@@ -87,8 +87,7 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
                         $this->entityManager->persist($attributeVal);
                         $active->addBasicAttributes($attributeVal);
                     }
-                }
-                elseif ($key == 'customAttributes') {
+                } elseif ($key == 'customAttributes') {
                     $active->removeAllCustomAttributes();
                     foreach ($items as $item):
                         $attributeVal = null;
@@ -122,10 +121,9 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
                     endforeach;
                 }
             endforeach;
+            $this->entityManager->flush();
+            $this->attributeValueRepository->deleteOrphanedAttributes();
         endif;
-
-        $this->entityManager->flush();
-        $this->attributeValueRepository->deleteOrphanedAttributes();
     }
 
     public static function getSubscribedEvents()
