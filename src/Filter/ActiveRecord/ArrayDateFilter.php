@@ -8,8 +8,6 @@ use Doctrine\ORM\QueryBuilder;
 
 final class ArrayDateFilter extends AbstractContextAwareFilter
 {
-    protected array $properties = ["dateRecord"];
-
     /**
      * @inheritDoc
      */
