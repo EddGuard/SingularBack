@@ -55,22 +55,34 @@ class UnitFixtures extends Fixture implements FixtureGroupInterface, DependentFi
         endforeach;
         $manager->flush();
 
-        foreach ($this->basicAttributesRepository->findAll() as $basicAttributes):
-            if ($basicAttributes->getName() == "weight"){
-                $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "Kg"]));
-                $manager->persist($basicAttributes);
+        foreach ($this->basicAttributesRepository->findAll() as $basicAttribute):
+            if ($basicAttribute->getName() == "weight"){
+                $unit = $this->unitRepository->findOneBy(["name" => "Kg"]);
+                $basicAttribute->setUnit($unit);
+                $unit->addBasicAttribute($basicAttribute);
+                $manager->persist($unit);
+                $manager->persist($basicAttribute);
             }
-            if ($basicAttributes->getName() == "volume"){
-                $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "L"]));
-                $manager->persist($basicAttributes);
+            if ($basicAttribute->getName() == "volume"){
+                $unit = $this->unitRepository->findOneBy(["name" => "L"]);
+                $basicAttribute->setUnit($unit);
+                $unit->addBasicAttribute($basicAttribute);
+                $manager->persist($unit);
+                $manager->persist($basicAttribute);
             }
-            if (in_array($basicAttributes->getName(),["estimatedLifetime", "lifetime"])){
-                $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "Year/s"]));
-                $manager->persist($basicAttributes);
+            if (in_array($basicAttribute->getName(),["estimatedLifetime", "lifetime"])){
+                $unit = $this->unitRepository->findOneBy(["name" => "Year/s"]);
+                $basicAttribute->setUnit($unit);
+                $unit->addBasicAttribute($basicAttribute);
+                $manager->persist($unit);
+                $manager->persist($basicAttribute);
             }
-            if ($basicAttributes->getName() == "useWearTear"){
-                $basicAttributes->setUnit($this->unitRepository->findOneBy(["name" => "%"]));
-                $manager->persist($basicAttributes);
+            if ($basicAttribute->getName() == "useWearTear"){
+                $unit = $this->unitRepository->findOneBy(["name" => "%"]);
+                $basicAttribute->setUnit($unit);
+                $unit->addBasicAttribute($basicAttribute);
+                $manager->persist($unit);
+                $manager->persist($basicAttribute);
             }
         endforeach;
         $manager->flush();
