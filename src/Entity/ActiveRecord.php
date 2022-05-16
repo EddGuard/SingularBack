@@ -11,6 +11,7 @@ use App\Filter\ActiveRecord\ArrayDateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(attributes={
@@ -55,7 +56,8 @@ class ActiveRecord
     private $dateRecord = [];
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="json")
+     * @Assert\Type(type="array")
      * @Groups({
      *     "activeRecord"
      * })
@@ -69,7 +71,6 @@ class ActiveRecord
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * @Groups({ "active", "activeType", "activeRecord"})
-     * @MaxDepth(1)
      */
     protected $createdBy;
 
@@ -78,7 +79,6 @@ class ActiveRecord
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      * @Groups({ "active", "activeType", "activeRecord"})
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @MaxDepth(1)
      */
     private $updatedBy;
 

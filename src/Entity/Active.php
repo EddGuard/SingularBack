@@ -139,7 +139,6 @@ class Active
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * @Groups({ "active"})
-     * @MaxDepth(1)
      */
     protected $createdBy;
 
@@ -148,7 +147,6 @@ class Active
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      * @Groups({ "active"})
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @MaxDepth(1)
      */
     private $updatedBy;
 

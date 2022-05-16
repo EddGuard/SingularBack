@@ -88,6 +88,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 $basicAttributes = [];
                 foreach ($active->getBasicAttributes() as $key => $attributeValue) {
+                    $basicAttributes[$key]["id"] = $attributeValue->getId();
                     $basicAttributes[$key]["name"] = $attributeValue->getName();
                     $basicAttributes[$key]["value"] = $attributeValue->getValue();
                     if (!empty($attributeValue->getUnit())) {
@@ -100,6 +101,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 $customAttributes = [];
                 foreach ($active->getCustomAttributes() as $key => $attributeValue) {
+                    $customAttributes[$key]["id"] = $attributeValue->getId();
                     $customAttributes[$key]["name"] = $attributeValue->getName();
                     $customAttributes[$key]["value"] = $attributeValue->getValue();
                     if (!empty($attributeValue->getUnit())) {
@@ -119,10 +121,21 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $activeToSave->entry_date = $today->format("d/m/Y H:i:s");
                 $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
                 $activeToSave->type = $type;
-                $activeToSave->description = $content->description;
+                $activeToSave->description = $active->getDescription();
                 $activeToSave->user = json_decode($this->serializer->serialize($user, 'json'));
                 $activeToSave->basic_attributes = $basicAttributes;
                 $activeToSave->custom_attributes = $customAttributes;
+                $activeToSave->createdBy = $createdByObject;
+                $activeToSave->createdAt = $active->getCreatedAt();
+                $updatedBy = $active->getUpdatedBy();
+                $updatedByObject = [
+                    'id' => $updatedBy->getId(),
+                    'username' => $updatedBy->getUsername(),
+                    'name' => $updatedBy->getName(),
+                    'lastName' => $updatedBy->getLastName()
+                ];
+                $activeToSave->updatedBy = $updatedByObject;
+                $activeToSave->updatedAt = $active->getUpdatedAt();
 
                 $activeObject[] = $activeToSave;
                 $record->setActiveObject($activeObject);
@@ -154,6 +167,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $basicAttributes = [];
             foreach ($active->getBasicAttributes() as $key => $attributeValue) {
+                $basicAttributes[$key]["id"] = $attributeValue->getId();
                 $basicAttributes[$key]["name"] = $attributeValue->getName();
                 $basicAttributes[$key]["value"] = $attributeValue->getValue();
                 if (!empty($attributeValue->getUnit())) {
@@ -166,6 +180,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $customAttributes = [];
             foreach ($active->getCustomAttributes() as $key => $attributeValue) {
+                $customAttributes[$key]["id"] = $attributeValue->getId();
                 $customAttributes[$key]["name"] = $attributeValue->getName();
                 $customAttributes[$key]["value"] = $attributeValue->getValue();
                 if (!empty($attributeValue->getUnit())) {
@@ -186,10 +201,28 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
             $activeToSave->file = $active->getFile() ? $active->getFile()->getContentUrl() : null;
             $activeToSave->type = $type;
-            $activeToSave->description = $content->description;
+            $activeToSave->description = $active->getDescription();
             $activeToSave->user = json_decode($this->serializer->serialize($user, 'json'));
             $activeToSave->basic_attributes = $basicAttributes;
             $activeToSave->custom_attributes = $customAttributes;
+            $createdBy = $active->getCreatedBy();
+            $createdByObject = [
+                'id' => $createdBy->getId(),
+                'username' => $createdBy->getUsername(),
+                'name' => $createdBy->getName(),
+                'lastName' => $createdBy->getLastName()
+            ];
+            $activeToSave->createdBy = $createdByObject;
+            $activeToSave->createdAt = $active->getCreatedAt();
+            $updatedBy = $active->getUpdatedBy();
+            $updatedByObject = [
+                'id' => $updatedBy->getId(),
+                'username' => $updatedBy->getUsername(),
+                'name' => $updatedBy->getName(),
+                'lastName' => $updatedBy->getLastName()
+            ];
+            $activeToSave->updatedBy = $updatedByObject;
+            $activeToSave->updatedAt = $active->getUpdatedAt();
 
             $activeObject[] = $activeToSave;
             $record->setActiveObject($activeObject);
