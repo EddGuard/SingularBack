@@ -8,6 +8,9 @@ use App\Repository\ActiveRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Filter\ActiveRecord\ArrayDateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ApiResource(attributes={
@@ -21,6 +24,7 @@ use App\Filter\ActiveRecord\ArrayDateFilter;
  *      })
  * @ORM\Entity(repositoryClass=ActiveRecordRepository::class)
  * @ApiFilter(ArrayDateFilter::class, properties={"dateRecord"})
+ * @ApiFilter(SearchFilter::class, properties={"active.id"})
  */
 class ActiveRecord
 {
@@ -57,6 +61,40 @@ class ActiveRecord
      * })
      */
     private $activeObject = [];
+
+    /**
+     * @var User $createdBy
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @MaxDepth(1)
+     */
+    protected $createdBy;
+
+    /**
+     * @Gedmo\Blameable(on="update")
+     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @MaxDepth(1)
+     */
+    private $updatedBy;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @Groups({ "active", "activeType", "activeRecord"})
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
 
     public function getId(): ?int
     {
@@ -95,6 +133,59 @@ class ActiveRecord
     public function setActiveObject(array $activeObject): self
     {
         $this->activeObject = $activeObject;
+
+        return $this;
+    }
+
+    /**
+     * Returns createdBy.
+     *
+     * @return User
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getUpdatedBy(): ?User
+    {
+        return $this->updatedBy;
+    }
+
+    public function setUpdatedBy(?User $updatedBy): self
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

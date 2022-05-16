@@ -138,7 +138,7 @@ class Active
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
-     * @Groups({ "active", "activeType", "activeRecord"})
+     * @Groups({ "active"})
      * @MaxDepth(1)
      */
     protected $createdBy;
@@ -146,7 +146,7 @@ class Active
     /**
      * @Gedmo\Blameable(on="update")
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
-     * @Groups({ "active", "activeType", "activeRecord"})
+     * @Groups({ "active"})
      * @ORM\ManyToOne(targetEntity=User::class)
      * @MaxDepth(1)
      */
@@ -154,14 +154,14 @@ class Active
 
     /**
      * @Gedmo\Timestampable(on="update")
-     * @Groups({ "active", "activeType", "activeRecord"})
+     * @Groups({ "active"})
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @Groups({ "active", "activeType", "activeRecord"})
+     * @Groups({ "active"})
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
