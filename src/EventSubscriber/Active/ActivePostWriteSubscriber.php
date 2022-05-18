@@ -125,6 +125,13 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $activeToSave->user = json_decode($this->serializer->serialize($user, 'json'));
                 $activeToSave->basic_attributes = $basicAttributes;
                 $activeToSave->custom_attributes = $customAttributes;
+                $createdBy = $active->getCreatedBy();
+                $createdByObject = [
+                    'id' => $createdBy->getId(),
+                    'username' => $createdBy->getUsername(),
+                    'name' => $createdBy->getName(),
+                    'lastName' => $createdBy->getLastName()
+                ];
                 $activeToSave->createdBy = $createdByObject;
                 $activeToSave->createdAt = $active->getCreatedAt();
                 $updatedBy = $active->getUpdatedBy();
