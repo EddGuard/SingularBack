@@ -116,6 +116,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $type["name"] = $active->getActiveType() ? $active->getActiveType()->getName() : null;
 
                 $activeToSave = new \stdClass();
+                $activeToSave->id = $active->getId();
                 $activeToSave->reference = $active->getReference();
                 $today = new \DateTime();
                 $activeToSave->entry_date = $today->format("d/m/Y H:i:s");
@@ -202,6 +203,7 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $type["name"] = $active->getActiveType()->getName();
 
             $activeToSave = new \stdClass();
+            $activeToSave->id = $active->getId();
             $activeToSave->reference = $active->getReference();
             $today = new \DateTime();
             $activeToSave->entry_date = $today->format("d/m/Y H:i:s");
