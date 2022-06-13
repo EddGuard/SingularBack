@@ -28,10 +28,12 @@ class ActiveDataProvider implements ItemDataProviderInterface, RestrictedDataPro
             ->getRepository(Active::class)
             ->find($id);
 
-        $activeArray = array();
+        if ($context["item_operation_name"] !== 'delete') {
+            $activeArray = array();
 
-        $activeArray[] = $active;
-
-        return $activeArray;
+            $activeArray[] = $active;
+            return $activeArray;
+        }
+        return $active;
     }
 }
