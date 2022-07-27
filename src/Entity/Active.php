@@ -68,7 +68,7 @@ class Active
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({
-     *     "active", "active.write", "active.update", "activeType", "activeRecord"
+     *     "active", "active.write", "activeType", "activeRecord"
      * })
      */
     private $reference;
