@@ -29,7 +29,6 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
  *              "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *              "validation_groups"={"Default", "Create"},
  *              "denormalization_context"={"groups"={"active.write"}}
- *
  *          },
  *          "get"={"security"="is_granted('IS_AUTHENTICATED_FULLY')"},
  *      },
@@ -60,7 +59,7 @@ class Active
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "active", "activeType", "activeRecord", "active.update"
+     *     "active", "activeType", "activeRecord", "active.write", "activeType.write", "active.update", "activeType.update"
      * })
      */
     private $id;
@@ -109,7 +108,8 @@ class Active
     public $file;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="actives", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="actives")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({
      *     "active", "active.write", "active.update"
      * })

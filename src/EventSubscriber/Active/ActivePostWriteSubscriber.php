@@ -6,6 +6,7 @@ use App\Entity\Active;
 use App\Entity\ActiveRecord;
 use App\Entity\AttributeValue;
 use App\Entity\Unit;
+use App\Entity\User;
 use App\Exception\GeneralException;
 use App\Repository\AttributeValueRepository;
 use App\Repository\UnitRepository;
@@ -16,7 +17,6 @@ use ApiPlatform\Core\EventListener\EventPriorities;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-
 
 
 class ActivePostWriteSubscriber implements EventSubscriberInterface
@@ -127,21 +127,28 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
                 $activeToSave->basic_attributes = $basicAttributes;
                 $activeToSave->custom_attributes = $customAttributes;
                 $createdBy = $active->getCreatedBy();
-                $createdByObject = [
-                    'id' => $createdBy->getId(),
-                    'username' => $createdBy->getUsername(),
-                    'name' => $createdBy->getName(),
-                    'lastName' => $createdBy->getLastName()
-                ];
+                $createdByObject = [];
+                if ($createdBy instanceof User) {
+                    $createdByObject = [
+                        'id' => $createdBy->getId(),
+                        'username' => $createdBy->getUsername(),
+                        'name' => $createdBy->getName(),
+                        'lastName' => $createdBy->getLastName()
+                    ];
+                }
                 $activeToSave->createdBy = $createdByObject;
                 $activeToSave->createdAt = $active->getCreatedAt();
                 $updatedBy = $active->getUpdatedBy();
-                $updatedByObject = [
-                    'id' => $updatedBy->getId(),
-                    'username' => $updatedBy->getUsername(),
-                    'name' => $updatedBy->getName(),
-                    'lastName' => $updatedBy->getLastName()
-                ];
+                $updatedByObject = [];
+                if ($updatedBy instanceof User) {
+                    $updatedByObject = [
+                        'id' => $updatedBy->getId(),
+                        'username' => $updatedBy->getUsername(),
+                        'name' => $updatedBy->getName(),
+                        'lastName' => $updatedBy->getLastName()
+                    ];
+                }
+                $activeToSave->updatedBy = $updatedByObject;
                 $activeToSave->updatedBy = $updatedByObject;
                 $activeToSave->updatedAt = $active->getUpdatedAt();
 
@@ -155,6 +162,8 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
                 $this->entityManager->flush();
                 $this->entityManager->getConnection()->commit();
+
+                $this->attributeValueRepository->deleteOrphanedAttributes();
             } catch (\Exception $exception) {
                 $this->entityManager->getConnection()->rollback();
                 //$this->entityManager->clear();
@@ -215,21 +224,28 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $activeToSave->basic_attributes = $basicAttributes;
             $activeToSave->custom_attributes = $customAttributes;
             $createdBy = $active->getCreatedBy();
-            $createdByObject = [
-                'id' => $createdBy->getId(),
-                'username' => $createdBy->getUsername(),
-                'name' => $createdBy->getName(),
-                'lastName' => $createdBy->getLastName()
-            ];
+            $createdByObject = [];
+            if ($createdBy instanceof User) {
+                $createdByObject = [
+                    'id' => $createdBy->getId(),
+                    'username' => $createdBy->getUsername(),
+                    'name' => $createdBy->getName(),
+                    'lastName' => $createdBy->getLastName()
+                ];
+            }
             $activeToSave->createdBy = $createdByObject;
             $activeToSave->createdAt = $active->getCreatedAt();
             $updatedBy = $active->getUpdatedBy();
-            $updatedByObject = [
-                'id' => $updatedBy->getId(),
-                'username' => $updatedBy->getUsername(),
-                'name' => $updatedBy->getName(),
-                'lastName' => $updatedBy->getLastName()
-            ];
+            $updatedByObject = [];
+            if ($updatedBy instanceof User) {
+                $updatedByObject = [
+                    'id' => $updatedBy->getId(),
+                    'username' => $updatedBy->getUsername(),
+                    'name' => $updatedBy->getName(),
+                    'lastName' => $updatedBy->getLastName()
+                ];
+            }
+            $activeToSave->updatedBy = $updatedByObject;
             $activeToSave->updatedBy = $updatedByObject;
             $activeToSave->updatedAt = $active->getUpdatedAt();
 
@@ -245,6 +261,8 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
             $this->entityManager->flush();
 
             $this->entityManager->getConnection()->commit();
+
+            $this->attributeValueRepository->deleteOrphanedAttributes();
         }
     }
 

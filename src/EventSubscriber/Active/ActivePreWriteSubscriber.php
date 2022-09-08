@@ -40,8 +40,6 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
 
     /**
      * @param ViewEvent $event
-     * @throws GeneralException
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function onKernelView(ViewEvent $event)
     {
@@ -123,6 +121,10 @@ class ActivePreWriteSubscriber implements EventSubscriberInterface
             endforeach;
             $this->entityManager->flush();
             $this->attributeValueRepository->deleteOrphanedAttributes();
+            $activeArray = array();
+
+            $activeArray[] = $active;
+            $event->setControllerResult($activeArray);
         endif;
     }
 
