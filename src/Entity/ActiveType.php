@@ -47,7 +47,7 @@ class ActiveType
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "activeType", "active", "active.write", "active.update"
+     *     "activeType", "active"
      * })
      */
     private $id;
@@ -55,8 +55,7 @@ class ActiveType
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({
-     *     "activeType", "activeType.write",
-     *     "activeType.update", "active"
+     *     "activeType", "active"
      * })
      */
     private $name;

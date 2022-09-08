@@ -109,7 +109,7 @@ class Active
     public $file;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="actives", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=ActiveType::class, inversedBy="actives")
      * @Groups({
      *     "active", "active.write", "active.update"
      * })
