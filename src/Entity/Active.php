@@ -167,6 +167,8 @@ class Active
     public function __construct()
     {
         $this->attributeValues = new ArrayCollection();
+        $this->basicAttributes = new ArrayCollection();
+        $this->customAttributes = new ArrayCollection();
     }
 
     public function getId(): ?int

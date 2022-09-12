@@ -68,7 +68,11 @@ class ActivePostWriteSubscriber implements EventSubscriberInterface
 
 
         if (!($active instanceof Active)) {
-            return;
+            if (is_array($active) && $active[0] instanceof Active) {
+                $active = $active[0];
+            } else {
+                return;
+            }
         }
         if ('api_actives_post_collection' == $route) {
 
