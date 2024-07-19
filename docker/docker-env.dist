@@ -1,0 +1,37 @@
+# Docker environment variables template file
+# Used to deploy the app in local, dev, pre and pro environments
+# To deploy the local environment:
+#     1. Create a copy called docker-env.local
+#     2. Populate variables
+#     3. In the project directory, run:
+#         docker-compose --env-file docker/docker-env.local [COMMAND]
+
+COMPOSE_PROJECT_NAME=
+
+PROJECT_NAME=
+PROJECT_ENV=
+PROJECT_COMPONENT=
+
+WEB_EXTERNAL_PORT=
+DB_EXTERNAL_PORT=
+
+XDEBUG_ENABLED=
+
+DB_NAME=
+DB_USER=
+DB_PASS=
+
+RABBITMQ_USER=
+RABBITMQ_PASS=
+RABBITMQ_VHOST=
+
+RABBIT1=
+RABBIT2=
+RABBIT3=
+RABBIT4=
+RABBIT5=
+RABBIT6=
+RABBIT7=
+RABBIT8=
+
+MAILER_EXTERNAL_PORT=

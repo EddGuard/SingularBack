@@ -46,7 +46,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $user->setLastName('admin');
         $user->addGroup($role);
         $user->setPassword($this->encoder->encodePassword($user, $plainPassword));
-        $user->setUsername('admin@tfg.com');
+        $user->setUsername('tfg@tfg.com');
         $user->setCreatedAt(new \DateTime());
         $manager->persist($user);
 

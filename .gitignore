@@ -19,3 +19,5 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 /migrations/*
+/docker-compose.yml
+/docker/docker-env.local
