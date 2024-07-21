@@ -21,3 +21,5 @@
 /migrations/*
 /docker-compose.yml
 /docker/docker-env.local
+/docker/nginx/conf/default.conf.local
+/dev/
